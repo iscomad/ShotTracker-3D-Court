@@ -26,8 +26,8 @@ public class Main : MonoBehaviour
         //AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
         //bool hasExtra = intent.Call<bool>("hasExtra", "socket_url");
 
-        socketUrl = "ws://devapp.shottracker.com/live?start_token=a885265a-378e-4cf0-bed1-b66f60df8175";
-        sessionId = "bdc3d8ed-b2ba-11e8-8c97-02426636f2ea";
+        socketUrl = "ws://devapp.shottracker.com/live?start_token=4330d84b-3ff6-4290-8f0c-2bb65d49faf0";
+        sessionId = "ac9b64e5-b50c-11e8-8c97-0242fd01d15f";
         //if (hasExtra)
         //{
         //    AndroidJavaObject extras = intent.Call<AndroidJavaObject>("getExtras");
@@ -58,7 +58,7 @@ public class Main : MonoBehaviour
         UnityMainThreadDispatcher.Instance().Enqueue(() => logText.text += message + '\n' );
     }
 
-    private void OnOpenHandler(object sender, System.EventArgs e)
+    private void OnOpenHandler(object sender, EventArgs e)
     {
         string message = "WebSocket connected!";
         Debug.Log(message);
@@ -76,19 +76,23 @@ public class Main : MonoBehaviour
         Debug.Log(message);
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
-            int startIndex = Math.Max(0, logText.text.Length);
-            logText.text = logText.text.Substring(startIndex, 500) + message + '\n';
+            int startIndex = Math.Max(0, logText.text.Length - 500);
+            logText.text = logText.text.Substring(startIndex) + message + '\n';
         });
-        Entity entity = JsonUtility.FromJson<Entity>(message);
-        if (entity.data.bid > 0) {
-            SetBallPosition(entity.data.x, entity.data.y);
+    
+        string jsonString = System.Text.Encoding.UTF8.GetString(e.RawData);
+        Entity entity = JsonUtility.FromJson<Entity>(jsonString);
+        if (entity.data.bid > 0)
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() => SetBallPosition(entity.data.y, entity.data.x));
         }
+
     }
 
     private void SetBallPosition(int x, int y)
     {
-        float xNew = x / WIDTH * 9;
-        float zNew = y / HEIGHT * 5;
+        float xNew = x / WIDTH * 9 * 2;
+        float zNew = y / HEIGHT * 5 * -2;
         float yNew = ball.transform.position.y;
         ball.transform.position = new Vector3(xNew, yNew, zNew);
     }

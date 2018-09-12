@@ -49,7 +49,7 @@
             android:hardwareAccelerated="false"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:screenOrientation="fullSensor" >
+            android:screenOrientation="landscape" >
             <meta-data
                 android:name="unityplayer.UnityActivity"
                 android:value="true" />
@@ -57,7 +57,7 @@
 
         <meta-data
             android:name="unity.build-id"
-            android:value="f976a85d-ea84-4c6d-820a-b46e21ea007d" />
+            android:value="88be1bc0-b7ff-4796-9212-aefc93922adf" />
         <meta-data
             android:name="unity.splash-mode"
             android:value="0" />

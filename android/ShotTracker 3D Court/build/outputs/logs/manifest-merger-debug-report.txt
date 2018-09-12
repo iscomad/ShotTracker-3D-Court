@@ -52,17 +52,17 @@ ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D
 activity#com.shottracker.fan.UnityPlayerActivity
 ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:5-7:16
 	android:screenOrientation
-		ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:48-86
+		ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:48-85
 	android:label
 		ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:15-47
 	android:launchMode
-		ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:87-118
+		ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:86-117
 	android:hardwareAccelerated
-		ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:301-336
+		ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:300-335
 	android:configChanges
-		ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:119-300
+		ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:118-299
 	android:name
-		ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:337-391
+		ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:5:336-390
 meta-data#unityplayer.UnityActivity
 ADDED from /Users/Isco/UnityProjects/ShotTracker 3D Court/android/ShotTracker 3D Court/src/main/AndroidManifest.xml:6:7-82
 	android:value

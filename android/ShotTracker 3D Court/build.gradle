@@ -67,4 +67,11 @@ android {
         doNotStrip '*/x86/*.so'
     }
 
+    libraryVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (outputFile != null && outputFileName.endsWith('.aar')) {
+                outputFileName = "court3d.aar"
+            }
+        }
+    }
 }

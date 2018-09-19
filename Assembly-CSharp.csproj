@@ -66,13 +66,13 @@
     <Compile Include="Assets\ClickSetPosition.cs" />
     <Compile Include="Assets\CoroutineExample.cs" />
     <Compile Include="Assets\CourtMouseClickScript.cs" />
-    <Compile Include="Assets\ExampleClass.cs" />
     <Compile Include="Assets\LightScript.cs" />
     <Compile Include="Assets\Main.cs" />
     <Compile Include="Assets\MouseClickForceScript.cs" />
     <Compile Include="Assets\PropertiesAndCoroutines.cs" />
     <Compile Include="Assets\SupportBackScript.cs" />
     <Compile Include="Assets\UnityMainThreadDispatcher.cs" />
+    <None Include="Assets\3D Text Shader.shader" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>/Users/Isco/UnityProjects/ShotTracker 3D Court/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

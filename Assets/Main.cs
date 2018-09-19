@@ -24,6 +24,10 @@ public class Main : MonoBehaviour
 
     void Start()
     {
+        // setting custom jersey colors. It works!
+        team1Pool.transform.GetChild(4).transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.green);
+        team1Pool.transform.GetChild(4).transform.GetChild(1).GetComponent<TextMesh>().color = Color.black;
+
         Debug.Log("start");
         logText.text = "start\n";
 

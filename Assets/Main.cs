@@ -5,6 +5,7 @@ using WebSocketSharp;
 using System.Threading;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 public class Main : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class Main : MonoBehaviour
     private string[] team1Numbers;
     private string[] team2Numbers;
 
+    private Data liveGameData;
+
     void Start()
     {
         // setting custom jersey colors. It works!
@@ -38,7 +41,7 @@ public class Main : MonoBehaviour
         //AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         //AndroidJavaObject currentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
         //AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
-        //bool hasExtra = intent.Call<bool>("hasExtra", "socket_url");
+        //bool hasExtra = intent.Call<bool>("hasExtra", "live_game_data");
 
         socketUrl = "ws://devapp.shottracker.com/live?start_token=739ae998-07d6-4e2a-9974-66578b3ea742";
         sessionId = "8072b047-b6ac-11e8-b7bf-02424a95ad15";
@@ -48,25 +51,40 @@ public class Main : MonoBehaviour
         team2Numbers = new string[] { "0", "1", "2", "22", "19" };
         //if (hasExtra)
         //{
-            //AndroidJavaObject extras = intent.Call<AndroidJavaObject>("getExtras");
-            //socketUrl = extras.Call<string>("getString", "socket_url");
-            //sessionId = extras.Call<string>("getString", "session_id");
+        //AndroidJavaObject extras = intent.Call<AndroidJavaObject>("getExtras");
+        //socketUrl = extras.Call<string>("getString", "socket_url");
+        //sessionId = extras.Call<string>("getString", "session_id");
+        //string liveGameDataRaw = extras.Call<string>("getString", "live_game_data");
+        string liveGameDataRaw = ReadFromTestFile();
+        logText.text = liveGameDataRaw;
+        liveGameData = JsonUtility.FromJson<Data>(liveGameDataRaw);
 
-            //string playerIdsRaw = extras.Call<string>("getString", "player_ids_1");
+        //string playerIdsRaw = extras.Call<string>("getString", "player_ids_1");
         string playerIdsRaw = "3664,3728,3999,4000";
-            ReadPlayerIds(team1Dict, playerIdsRaw.Split(','), team1Pool);
+        ReadPlayerIds(team1Dict, playerIdsRaw.Split(','), team1Pool);
 
-            //playerIdsRaw = extras.Call<string>("getString", "player_ids_2");
+        //playerIdsRaw = extras.Call<string>("getString", "player_ids_2");
         playerIdsRaw = "2902,2903,2904,2905,2906";
-            ReadPlayerIds(team2Dict, playerIdsRaw.Split(','), team2Pool);
+        ReadPlayerIds(team2Dict, playerIdsRaw.Split(','), team2Pool);
 
-            SetupPlayers();
+        SetupPlayers();
         //}
 
         logText.text += socketUrl + '\n' + sessionId + '\n';
         StartSocket();
 
         ws.ConnectAsync();
+    }
+
+    private string ReadFromTestFile()
+    {
+        string path = "Assets/Resources/TestLiveGameData.txt";
+
+        StreamReader reader = new StreamReader(path);
+        string text = reader.ReadToEnd();
+        reader.Close();
+
+        return text;
     }
 
     private void SetupPlayers()
@@ -77,16 +95,26 @@ public class Main : MonoBehaviour
 
     private void SetupTeam(GameObject teamPool, Color jerseyColor, string[] jerseyNumbers)
     {
+        Color fontColor = GetFontColor(jerseyColor);
         for (int i = 0; i < teamPool.transform.childCount; i++)
         {
             Transform playerObject = teamPool.transform.GetChild(i);
             playerObject.transform.GetChild(0).GetComponent<Renderer>().material.color = jerseyColor;
             playerObject.transform.GetChild(1).GetComponent<TextMesh>().text = jerseyNumbers[i];
+            playerObject.transform.GetChild(1).GetComponent<TextMesh>().color = fontColor;
             playerObject.transform.GetChild(2).GetComponent<TextMesh>().text = jerseyNumbers[i];
+            playerObject.transform.GetChild(2).GetComponent<TextMesh>().color = fontColor;
         }
     }
 
-    private void ReadPlayerIds(Dictionary<string, GameObject> players, 
+    private Color GetFontColor(Color jerseyColor)
+    {
+        // Based on Luma constants (see https://en.wikipedia.org/wiki/Luma_%28video%29)
+        double threshold = 0.2126 * jerseyColor.r + 0.7152 * jerseyColor.g + 0.0722 * jerseyColor.b;
+        return threshold < 0.67 ? Color.white : Color.black;
+    }
+
+    private void ReadPlayerIds(Dictionary<string, GameObject> players,
                                string[] playerIds, GameObject playersPool)
     {
         int playersCount = playersPool.transform.childCount;
@@ -106,11 +134,11 @@ public class Main : MonoBehaviour
         ws.OnError += OnErrorHandler;
     }
 
-    private void OnErrorHandler(object sender, ErrorEventArgs e)
+    private void OnErrorHandler(object sender, WebSocketSharp.ErrorEventArgs e)
     {
         string message = "WebSocket connection failure: " + e.Message;
         Debug.Log(message);
-        UnityMainThreadDispatcher.Instance().Enqueue(() => logText.text += message + '\n' );
+        UnityMainThreadDispatcher.Instance().Enqueue(() => logText.text += message + '\n');
     }
 
     private void OnOpenHandler(object sender, EventArgs e)
@@ -134,13 +162,15 @@ public class Main : MonoBehaviour
             int startIndex = Math.Max(0, logText.text.Length - 500);
             logText.text = logText.text.Substring(startIndex) + message + '\n';
         });
-    
+
         string jsonString = System.Text.Encoding.UTF8.GetString(e.RawData);
-        Entity entity = JsonUtility.FromJson<Entity>(jsonString);
+        SocketEntity entity = JsonUtility.FromJson<SocketEntity>(jsonString);
         if (entity.data.bid > 0)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() => SetBallPosition(entity.data.y, entity.data.x));
-        } else if (entity.data.pid > 0) {
+        }
+        else if (entity.data.pid > 0)
+        {
             UnityMainThreadDispatcher.Instance().Enqueue(() => SetPlayerPosition(entity.data.pid + "", entity.data.y, entity.data.x));
         }
 
@@ -148,10 +178,13 @@ public class Main : MonoBehaviour
 
     private void SetPlayerPosition(string playerId, int x, int y)
     {
-        if (team1Dict.ContainsKey(playerId)) {
+        if (team1Dict.ContainsKey(playerId))
+        {
             Debug.LogWarning("Setting team 1 player position");
             SetGameObjectPosition(team1Dict[playerId], x, y);
-        } else if (team2Dict.ContainsKey(playerId)) {
+        }
+        else if (team2Dict.ContainsKey(playerId))
+        {
             Debug.LogWarning("Setting team 2 player position");
             SetGameObjectPosition(team2Dict[playerId], x, y);
         }
@@ -163,7 +196,7 @@ public class Main : MonoBehaviour
         SetGameObjectPosition(ball, x, y);
     }
 
-    private void SetGameObjectPosition(GameObject gObject, int x, int y) 
+    private void SetGameObjectPosition(GameObject gObject, int x, int y)
     {
         float xNew = x / WIDTH * 9 * 2;
         float zNew = y / HEIGHT * 5 * -2;
@@ -176,7 +209,8 @@ public class Main : MonoBehaviour
         string message = "WebSocket closed with code: " + e.Code + " and reason: " + e.Reason;
         Debug.Log(message);
         UnityMainThreadDispatcher.Instance().Enqueue(() => logText.text += message + '\n');
-        if (e.Code == 1006) {
+        if (e.Code == 1006)
+        {
             StartSocket();
         }
     }
@@ -189,15 +223,16 @@ public class Main : MonoBehaviour
     }
 }
 
+#region Data Objects
 [Serializable]
-public class Entity
+public class SocketEntity
 {
     public string source;
-    public Data data;
+    public SocketData data;
 }
 
 [Serializable]
-public class Data
+public class SocketData
 {
     public int tid;
     public long bid;
@@ -215,3 +250,47 @@ public class Data
         public string gameId;
     }
 }
+
+[Serializable]
+public class Data
+{
+    public Game game;
+    public Court court;
+    public Team team1;
+    public Team team2;
+}
+
+[Serializable]
+public class Game
+{
+    public string id;
+    public string socketUrl;
+    public string sessionId;
+}
+
+[Serializable]
+public class Court
+{
+    public string id;
+    public string name;
+    public int width;
+    public int height;
+}
+
+[Serializable]
+public class Team
+{
+    public string id;
+    public string name;
+    public string jerseyColor;
+    public Player[] players;
+}
+
+[Serializable]
+public class Player
+{
+    public string id;
+    public string name;
+    public string number;
+}
+#endregion

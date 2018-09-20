@@ -73,6 +73,7 @@
     <Compile Include="Assets\SupportBackScript.cs" />
     <Compile Include="Assets\UnityMainThreadDispatcher.cs" />
     <None Include="Assets\3D Text Shader.shader" />
+    <None Include="Assets\Resources\TestLiveGameData.txt" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>/Users/Isco/UnityProjects/ShotTracker 3D Court/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

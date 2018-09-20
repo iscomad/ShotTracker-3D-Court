@@ -1,0 +1,77 @@
+{
+	"game": {
+		"id": "id123456",
+		"socketUrl": "ws://devapp.shottracker.com/live?start_token=739ae998-07d6-4e2a-9974-66578b3ea742",
+		"sessionId": "8072b047-b6ac-11e8-b7bf-02424a95ad15"
+	},
+	"court": {
+		"id": "id123457",
+		"name": "ShotTracker Lab",
+		"width": 26440,
+		"height": 14760
+	},
+	"team1": {
+		"id": "id123458",
+		"name": "Boston Celtics",
+		"jerseyColor": "#007A33",
+		"players": [
+			{
+				"id": "1234",
+				"name": "Kyrie Irving",
+				"number": "11"
+			},
+			{
+				"id": "1235",
+				"name": "Jason Tatum",
+				"number": "0"
+			},
+			{
+				"id": "1236",
+				"name": "Gordon Hayward",
+				"number": "20"
+			},
+			{
+				"id": "1237",
+				"name": "Jaylen Brown",
+				"number": "7"
+			},
+			{
+				"id": "1238",
+				"name": "Al Horford",
+				"number": "42"
+			}
+		]
+	},
+	"team2": {
+		"id": "id123459",
+		"name": "Golden State Warriors",
+		"jerseyColor": "#006BB6",
+		"players": [
+			{
+				"id": "1239",
+				"name": "Stephen Curry",
+				"number": "30"
+			},
+			{
+				"id": "1240",
+				"name": "Kevin Durant",
+				"number": "35"
+			},
+			{
+				"id": "1241",
+				"name": "DeMarcus Cousins",
+				"number": "0"
+			},
+			{
+				"id": "1242",
+				"name": "Klay Thompson",
+				"number": "21"
+			},
+			{
+				"id": "1243",
+				"name": "Draymond Green",
+				"number": "23"
+			}
+		]
+	}
+}

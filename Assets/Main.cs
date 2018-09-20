@@ -18,40 +18,50 @@ public class Main : MonoBehaviour
     private string socketUrl;
     private const float WIDTH = 26440f;
     private const float HEIGHT = 14760f;
+    private Color team1Color;
+    private Color team2Color;
 
     private Dictionary<string, GameObject> team1Dict = new Dictionary<string, GameObject>();
     private Dictionary<string, GameObject> team2Dict = new Dictionary<string, GameObject>();
+    private string[] team1Numbers;
+    private string[] team2Numbers;
 
     void Start()
     {
         // setting custom jersey colors. It works!
-        team1Pool.transform.GetChild(4).transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.green);
-        team1Pool.transform.GetChild(4).transform.GetChild(1).GetComponent<TextMesh>().color = Color.black;
+        //team1Pool.transform.GetChild(4).transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.green);
+        //team1Pool.transform.GetChild(4).transform.GetChild(1).GetComponent<TextMesh>().color = Color.black;
 
         Debug.Log("start");
         logText.text = "start\n";
 
-        AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-        AndroidJavaObject currentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-        AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
-        bool hasExtra = intent.Call<bool>("hasExtra", "socket_url");
+        //AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+        //AndroidJavaObject currentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+        //AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
+        //bool hasExtra = intent.Call<bool>("hasExtra", "socket_url");
 
         socketUrl = "ws://devapp.shottracker.com/live?start_token=739ae998-07d6-4e2a-9974-66578b3ea742";
         sessionId = "8072b047-b6ac-11e8-b7bf-02424a95ad15";
-        if (hasExtra)
-        {
-            AndroidJavaObject extras = intent.Call<AndroidJavaObject>("getExtras");
-            socketUrl = extras.Call<string>("getString", "socket_url");
-            sessionId = extras.Call<string>("getString", "session_id");
+        ColorUtility.TryParseHtmlString("#00ff00", out team1Color);
+        ColorUtility.TryParseHtmlString("#bb2211", out team2Color);
+        team1Numbers = new string[] { "11", "30", "0", "10", "5" };
+        team2Numbers = new string[] { "0", "1", "2", "22", "19" };
+        //if (hasExtra)
+        //{
+            //AndroidJavaObject extras = intent.Call<AndroidJavaObject>("getExtras");
+            //socketUrl = extras.Call<string>("getString", "socket_url");
+            //sessionId = extras.Call<string>("getString", "session_id");
 
-            string playerIdsRaw = extras.Call<string>("getString", "player_ids_1");
-        //string playerIdsRaw = "3664,3728,3999,4000";
-            readPlayerIds(team1Dict, playerIdsRaw.Split(','), team1Pool);
+            //string playerIdsRaw = extras.Call<string>("getString", "player_ids_1");
+        string playerIdsRaw = "3664,3728,3999,4000";
+            ReadPlayerIds(team1Dict, playerIdsRaw.Split(','), team1Pool);
 
-            playerIdsRaw = extras.Call<string>("getString", "player_ids_2");
-        //playerIdsRaw = "2902,2903,2904,2905,2906";
-            readPlayerIds(team2Dict, playerIdsRaw.Split(','), team2Pool);
-        }
+            //playerIdsRaw = extras.Call<string>("getString", "player_ids_2");
+        playerIdsRaw = "2902,2903,2904,2905,2906";
+            ReadPlayerIds(team2Dict, playerIdsRaw.Split(','), team2Pool);
+
+            SetupPlayers();
+        //}
 
         logText.text += socketUrl + '\n' + sessionId + '\n';
         StartSocket();
@@ -59,7 +69,24 @@ public class Main : MonoBehaviour
         ws.ConnectAsync();
     }
 
-    private void readPlayerIds(Dictionary<string, GameObject> players, 
+    private void SetupPlayers()
+    {
+        SetupTeam(team1Pool, team1Color, team1Numbers);
+        SetupTeam(team2Pool, team2Color, team2Numbers);
+    }
+
+    private void SetupTeam(GameObject teamPool, Color jerseyColor, string[] jerseyNumbers)
+    {
+        for (int i = 0; i < teamPool.transform.childCount; i++)
+        {
+            Transform playerObject = teamPool.transform.GetChild(i);
+            playerObject.transform.GetChild(0).GetComponent<Renderer>().material.color = jerseyColor;
+            playerObject.transform.GetChild(1).GetComponent<TextMesh>().text = jerseyNumbers[i];
+            playerObject.transform.GetChild(2).GetComponent<TextMesh>().text = jerseyNumbers[i];
+        }
+    }
+
+    private void ReadPlayerIds(Dictionary<string, GameObject> players, 
                                string[] playerIds, GameObject playersPool)
     {
         int playersCount = playersPool.transform.childCount;

@@ -14,20 +14,14 @@ public class Main : MonoBehaviour
     public GameObject team1Pool;
     public GameObject team2Pool;
 
-    private WebSocket ws;
-    private string sessionId;
-    private string socketUrl;
-    private const float WIDTH = 26440f;
-    private const float HEIGHT = 14760f;
-    private Color team1Color;
-    private Color team2Color;
+    WebSocket ws;
+    const float WIDTH = 26440f;
+    const float HEIGHT = 14760f;
 
-    private Dictionary<string, GameObject> team1Dict = new Dictionary<string, GameObject>();
-    private Dictionary<string, GameObject> team2Dict = new Dictionary<string, GameObject>();
-    private string[] team1Numbers;
-    private string[] team2Numbers;
+    Dictionary<string, GameObject> team1Dict = new Dictionary<string, GameObject>();
+    Dictionary<string, GameObject> team2Dict = new Dictionary<string, GameObject>();
 
-    private Data liveGameData;
+    Data liveGameData;
 
     void Start()
     {
@@ -43,34 +37,20 @@ public class Main : MonoBehaviour
         //AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
         //bool hasExtra = intent.Call<bool>("hasExtra", "live_game_data");
 
-        socketUrl = "ws://devapp.shottracker.com/live?start_token=739ae998-07d6-4e2a-9974-66578b3ea742";
-        sessionId = "8072b047-b6ac-11e8-b7bf-02424a95ad15";
-        ColorUtility.TryParseHtmlString("#00ff00", out team1Color);
-        ColorUtility.TryParseHtmlString("#bb2211", out team2Color);
-        team1Numbers = new string[] { "11", "30", "0", "10", "5" };
-        team2Numbers = new string[] { "0", "1", "2", "22", "19" };
         //if (hasExtra)
         //{
         //AndroidJavaObject extras = intent.Call<AndroidJavaObject>("getExtras");
-        //socketUrl = extras.Call<string>("getString", "socket_url");
-        //sessionId = extras.Call<string>("getString", "session_id");
         //string liveGameDataRaw = extras.Call<string>("getString", "live_game_data");
         string liveGameDataRaw = ReadFromTestFile();
         logText.text = liveGameDataRaw;
         liveGameData = JsonUtility.FromJson<Data>(liveGameDataRaw);
 
-        //string playerIdsRaw = extras.Call<string>("getString", "player_ids_1");
-        string playerIdsRaw = "3664,3728,3999,4000";
-        ReadPlayerIds(team1Dict, playerIdsRaw.Split(','), team1Pool);
+        SetupTeam(liveGameData.team1, team1Dict, team1Pool);
+        SetupTeam(liveGameData.team2, team2Dict, team2Pool);
 
-        //playerIdsRaw = extras.Call<string>("getString", "player_ids_2");
-        playerIdsRaw = "2902,2903,2904,2905,2906";
-        ReadPlayerIds(team2Dict, playerIdsRaw.Split(','), team2Pool);
-
-        SetupPlayers();
         //}
 
-        logText.text += socketUrl + '\n' + sessionId + '\n';
+        logText.text += liveGameData.game.socketUrl + '\n' + liveGameData.game.sessionId + '\n';
         StartSocket();
 
         ws.ConnectAsync();
@@ -87,26 +67,6 @@ public class Main : MonoBehaviour
         return text;
     }
 
-    private void SetupPlayers()
-    {
-        SetupTeam(team1Pool, team1Color, team1Numbers);
-        SetupTeam(team2Pool, team2Color, team2Numbers);
-    }
-
-    private void SetupTeam(GameObject teamPool, Color jerseyColor, string[] jerseyNumbers)
-    {
-        Color fontColor = GetFontColor(jerseyColor);
-        for (int i = 0; i < teamPool.transform.childCount; i++)
-        {
-            Transform playerObject = teamPool.transform.GetChild(i);
-            playerObject.transform.GetChild(0).GetComponent<Renderer>().material.color = jerseyColor;
-            playerObject.transform.GetChild(1).GetComponent<TextMesh>().text = jerseyNumbers[i];
-            playerObject.transform.GetChild(1).GetComponent<TextMesh>().color = fontColor;
-            playerObject.transform.GetChild(2).GetComponent<TextMesh>().text = jerseyNumbers[i];
-            playerObject.transform.GetChild(2).GetComponent<TextMesh>().color = fontColor;
-        }
-    }
-
     private Color GetFontColor(Color jerseyColor)
     {
         // Based on Luma constants (see https://en.wikipedia.org/wiki/Luma_%28video%29)
@@ -114,19 +74,28 @@ public class Main : MonoBehaviour
         return threshold < 0.67 ? Color.white : Color.black;
     }
 
-    private void ReadPlayerIds(Dictionary<string, GameObject> players,
-                               string[] playerIds, GameObject playersPool)
+    private void SetupTeam(Team team, Dictionary<string, GameObject> teamDict,
+                               GameObject playersPool)
     {
         int playersCount = playersPool.transform.childCount;
-        for (int i = 0; i < Math.Min(playersCount, playerIds.Length); i++)
+        Color jerseyColor = new Color();
+        ColorUtility.TryParseHtmlString(team.jerseyColor, out jerseyColor);
+        Color fontColor = GetFontColor(jerseyColor);
+        for (int i = 0; i < Math.Min(playersCount, team.players.Length); i++)
         {
-            players.Add(playerIds[i], playersPool.transform.GetChild(i).gameObject);
+            GameObject playerObject = playersPool.transform.GetChild(i).gameObject;
+            playerObject.transform.GetChild(0).GetComponent<Renderer>().material.color = jerseyColor;
+            playerObject.transform.GetChild(1).GetComponent<TextMesh>().text = team.players[i].number;
+            playerObject.transform.GetChild(1).GetComponent<TextMesh>().color = fontColor;
+            playerObject.transform.GetChild(2).GetComponent<TextMesh>().text = team.players[i].number;
+            playerObject.transform.GetChild(2).GetComponent<TextMesh>().color = fontColor;
+            teamDict.Add(team.players[i].id, playerObject);
         }
     }
 
     private void StartSocket()
     {
-        ws = new WebSocket(socketUrl);
+        ws = new WebSocket(liveGameData.game.socketUrl);
 
         ws.OnOpen += OnOpenHandler;
         ws.OnMessage += OnMessageHandler;
@@ -148,12 +117,12 @@ public class Main : MonoBehaviour
         UnityMainThreadDispatcher.Instance().Enqueue(() => logText.text += message + '\n');
         Thread.Sleep(3000);
         ws.SendAsync(
-            "{ \"action\": \"subscribe\",\"sessionId\": \"" + sessionId + "\",\"source\": \"court\"}",
+            "{ \"action\": \"subscribe\",\"sessionId\": \"" + liveGameData.game.sessionId + "\",\"source\": \"court\"}",
             OnSendComplete
         );
     }
 
-    private void OnMessageHandler(object sender, MessageEventArgs e)
+    private void OnMessageHandler(object sender, WebSocketSharp.MessageEventArgs e)
     {
         string message = "WebSocket server said: " + e.Data;
         Debug.Log(message);

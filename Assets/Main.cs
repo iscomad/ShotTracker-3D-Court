@@ -25,30 +25,32 @@ public class Main : MonoBehaviour
 
     void Start()
     {
-        // setting custom jersey colors. It works!
-        //team1Pool.transform.GetChild(4).transform.GetChild(0).GetComponent<Renderer>().material.SetColor("_Color", Color.green);
-        //team1Pool.transform.GetChild(4).transform.GetChild(1).GetComponent<TextMesh>().color = Color.black;
-
         Debug.Log("start");
         logText.text = "start\n";
 
-        //AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-        //AndroidJavaObject currentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-        //AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
-        //bool hasExtra = intent.Call<bool>("hasExtra", "live_game_data");
+        AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+        AndroidJavaObject currentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 
-        //if (hasExtra)
-        //{
-        //AndroidJavaObject extras = intent.Call<AndroidJavaObject>("getExtras");
-        //string liveGameDataRaw = extras.Call<string>("getString", "live_game_data");
-        string liveGameDataRaw = ReadFromTestFile();
+        string liveGameDataRaw = null;
+        if (currentActivity != null)
+        {
+            AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
+            bool hasExtra = intent.Call<bool>("hasExtra", "live_game_data");
+            if (hasExtra)
+            {
+                AndroidJavaObject extras = intent.Call<AndroidJavaObject>("getExtras");
+                liveGameDataRaw = extras.Call<string>("getString", "live_game_data");
+            }
+        }
+        if (liveGameDataRaw == null) {
+            liveGameDataRaw = ReadFromTestFile();
+        }
+
         logText.text = liveGameDataRaw;
         liveGameData = JsonUtility.FromJson<Data>(liveGameDataRaw);
 
         SetupTeam(liveGameData.team1, team1Dict, team1Pool);
         SetupTeam(liveGameData.team2, team2Dict, team2Pool);
-
-        //}
 
         logText.text += liveGameData.game.socketUrl + '\n' + liveGameData.game.sessionId + '\n';
         StartSocket();
@@ -167,10 +169,13 @@ public class Main : MonoBehaviour
 
     private void SetGameObjectPosition(GameObject gObject, int x, int y)
     {
-        float xNew = x / WIDTH * 9 * 2;
-        float zNew = y / HEIGHT * 5 * -2;
+        Court court = liveGameData.court;
+        float xNew = (float) x / court.width * 9 * 2;
+        float zNew = (float) y / court.height * 5 * -2;
         float yNew = gObject.transform.position.y;
         gObject.transform.position = new Vector3(xNew, yNew, zNew);
+        Debug.Log("new position for a player (" + xNew + ", " + zNew + ")");
+        Debug.Log("court size (" + court.width + ", " + court.height + ")");
     }
 
     private void OnCloseHandler(object sender, CloseEventArgs e)

@@ -1,77 +1,77 @@
 {
-	"game": {
-		"id": "id123456",
-		"socketUrl": "ws://devapp.shottracker.com/live?start_token=739ae998-07d6-4e2a-9974-66578b3ea742",
-		"sessionId": "8072b047-b6ac-11e8-b7bf-02424a95ad15"
-	},
-	"court": {
-		"id": "id123457",
-		"name": "ShotTracker Lab",
-		"width": 26440,
-		"height": 14760
-	},
-	"team1": {
-		"id": "id123458",
-		"name": "Boston Celtics",
-		"jerseyColor": "#007A33",
-		"players": [
-			{
-				"id": "1234",
-				"name": "Kyrie Irving",
-				"number": "11"
-			},
-			{
-				"id": "1235",
-				"name": "Jason Tatum",
-				"number": "0"
-			},
-			{
-				"id": "1236",
-				"name": "Gordon Hayward",
-				"number": "20"
-			},
-			{
-				"id": "1237",
-				"name": "Jaylen Brown",
-				"number": "7"
-			},
-			{
-				"id": "1238",
-				"name": "Al Horford",
-				"number": "42"
-			}
-		]
-	},
-	"team2": {
-		"id": "id123459",
-		"name": "Golden State Warriors",
-		"jerseyColor": "#006BB6",
-		"players": [
-			{
-				"id": "1239",
-				"name": "Stephen Curry",
-				"number": "30"
-			},
-			{
-				"id": "1240",
-				"name": "Kevin Durant",
-				"number": "35"
-			},
-			{
-				"id": "1241",
-				"name": "DeMarcus Cousins",
-				"number": "0"
-			},
-			{
-				"id": "1242",
-				"name": "Klay Thompson",
-				"number": "21"
-			},
-			{
-				"id": "1243",
-				"name": "Draymond Green",
-				"number": "23"
-			}
-		]
-	}
+  "game": {
+    "id": "null",
+    "sessionId": "9e309afa-bdd1-11e8-a7d2-0242c70db784",
+    "socketUrl": "ws://devapp.shottracker.com/live?start_token=0353bafc-09ff-4f4e-9654-c51689f5c384"
+  },
+  "court": {
+    "id": "8f277e8e-91ce-11e8-81f5-06a15c73f3c3",
+    "name": "st facility",
+    "width": 26440,
+    "height": 14760
+  },
+  "team1": {
+    "id": "469",
+    "name": "TestTeamAlpha",
+    "jerseyColor": "#00FF00",
+    "players": [
+      {
+        "id": "3664",
+        "name": "Player 1",
+        "number": "1"
+      },
+      {
+        "id": "3728",
+        "name": "Player 2",
+        "number": "2"
+      },
+      {
+        "id": "3999",
+        "name": "Player 3",
+        "number": "3"
+      },
+      {
+        "id": "4000",
+        "name": "Player 4",
+        "number": "4"
+      },
+      {
+        "id": "5450",
+        "name": "Player 5",
+        "number": "5"
+      }
+    ]
+  },
+  "team2": {
+    "id": "470",
+    "name": "TestTeamBravo",
+    "jerseyColor": "#0000FF",
+    "players": [
+      {
+        "id": "2902",
+        "name": "Player 1",
+        "number": "1"
+      },
+      {
+        "id": "2903",
+        "name": "Player 2",
+        "number": "2"
+      },
+      {
+        "id": "2904",
+        "name": "Player 3",
+        "number": "3"
+      },
+      {
+        "id": "2905",
+        "name": "Player 4",
+        "number": "4"
+      },
+      {
+        "id": "2906",
+        "name": "Player 5",
+        "number": "5"
+      }
+    ]
+  }
 }

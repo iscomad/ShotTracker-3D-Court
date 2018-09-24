@@ -1,8 +1,11 @@
 {
   "game": {
     "id": "null",
-    "sessionId": "9e309afa-bdd1-11e8-a7d2-0242c70db784",
-    "socketUrl": "ws://devapp.shottracker.com/live?start_token=0353bafc-09ff-4f4e-9654-c51689f5c384"
+    "sessionId": "eb53a295-c030-11e8-a7d2-0242a25c86c3",
+    "socketUrl": "ws://devapp.shottracker.com/live?start_token=845e5b28-3262-4f40-b79a-5aad58ebf4bc",
+    
+    "score1": "52",
+    "score2": "44"
   },
   "court": {
     "id": "8f277e8e-91ce-11e8-81f5-06a15c73f3c3",
@@ -14,6 +17,7 @@
     "id": "469",
     "name": "TestTeamAlpha",
     "jerseyColor": "#00FF00",
+    "logoUrl": "http://www.stickpng.com/assets/images/58419c6aa6515b1e0ad75a61.png",
     "players": [
       {
         "id": "3664",
@@ -46,6 +50,7 @@
     "id": "470",
     "name": "TestTeamBravo",
     "jerseyColor": "#0000FF",
+    "logoUlr": "http://content.sportslogos.net/logos/6/235/full/2499_golden_state_warriors-alternate-2011.png",
     "players": [
       {
         "id": "2902",

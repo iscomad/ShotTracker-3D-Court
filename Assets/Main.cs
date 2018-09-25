@@ -280,8 +280,11 @@ public class Main : MonoBehaviour
         yield return www;
 
         temp = www.texture;
-        Sprite sprite = Sprite.Create(temp, new Rect(0, 0, temp.width, temp.height), new Vector2(0.5f, 0.5f));
-        uiImage.sprite = sprite;
+        if (temp != null) 
+        { 
+            Sprite sprite = Sprite.Create(temp, new Rect(0, 0, temp.width, temp.height), new Vector2(0.5f, 0.5f));
+            uiImage.sprite = sprite;
+        }
     }
 }
 

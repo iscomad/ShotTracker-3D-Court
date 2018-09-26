@@ -253,7 +253,9 @@ public class Main : MonoBehaviour
         float xNew = (float)x / court.width * 9 * 2;
         float zNew = (float)y / court.height * 5 * -2;
         float yNew = gObject.transform.position.y;
-        gObject.transform.position = new Vector3(xNew, yNew, zNew);
+        Vector3 target = new Vector3(xNew, yNew, zNew);
+        //gObject.transform.position = target;
+        StartCoroutine(MoveObject(gObject, target, 0.3f));
     }
 
     void SetScore(string teamId, string score)
@@ -285,6 +287,18 @@ public class Main : MonoBehaviour
             Sprite sprite = Sprite.Create(temp, new Rect(0, 0, temp.width, temp.height), new Vector2(0.5f, 0.5f));
             uiImage.sprite = sprite;
         }
+    }
+
+    IEnumerator MoveObject(GameObject gObject, Vector3 target, float duration)
+    {
+        Vector3 source = gObject.transform.position;
+        float startTime = Time.time;
+        while (Time.time < startTime + duration)
+        {
+            gObject.transform.position = Vector3.Lerp(source, target, (Time.time - startTime) / duration);
+            yield return null;
+        }
+        gObject.transform.position = target;
     }
 }
 

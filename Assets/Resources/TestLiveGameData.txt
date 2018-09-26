@@ -1,8 +1,10 @@
 {
   "game": {
     "id": "null",
-    "sessionId": "9e309afa-bdd1-11e8-a7d2-0242c70db784",
-    "socketUrl": "ws://devapp.shottracker.com/live?start_token=0353bafc-09ff-4f4e-9654-c51689f5c384"
+    "sessionId": "31517f80-c102-11e8-821e-0242cdbe3bf8",
+    "socketUrl": "ws://devapp.shottracker.com/live?start_token=2773c88e-9462-4b46-bbac-3d4641a93ea8",
+    "score1": "2",
+    "score2": "3"
   },
   "court": {
     "id": "8f277e8e-91ce-11e8-81f5-06a15c73f3c3",
@@ -13,7 +15,8 @@
   "team1": {
     "id": "469",
     "name": "TestTeamAlpha",
-    "jerseyColor": "#00FF00",
+    "jerseyColor": "#F26522",
+    "logoUrl": "http://devapp.shottracker.com/v2/imageservice/6b2b5416-5655-11e7-8995-06a15c73f3c3/",
     "players": [
       {
         "id": "3664",
@@ -45,7 +48,8 @@
   "team2": {
     "id": "470",
     "name": "TestTeamBravo",
-    "jerseyColor": "#0000FF",
+    "jerseyColor": "#D3D3D3",
+    "logoUrl": "",
     "players": [
       {
         "id": "2902",

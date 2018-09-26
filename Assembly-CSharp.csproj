@@ -63,9 +63,7 @@
   <ItemGroup>
     <Compile Include="Assets\BallBehaviourScript.cs" />
     <Compile Include="Assets\CameraLookAtScript.cs" />
-    <Compile Include="Assets\ClickSetPosition.cs" />
     <Compile Include="Assets\CoroutineExample.cs" />
-    <Compile Include="Assets\CourtMouseClickScript.cs" />
     <Compile Include="Assets\LightScript.cs" />
     <Compile Include="Assets\Main.cs" />
     <Compile Include="Assets\MouseClickForceScript.cs" />

@@ -63,10 +63,10 @@ public class Main : MonoBehaviour
         scoreBoard.transform.Find("Name1").GetComponent<Text>().text = data.team1.name;
         scoreBoard.transform.Find("Name2").GetComponent<Text>().text = data.team2.name;
 
-        Image image = scoreBoard.transform.Find("Logo1/Logo").GetComponent<Image>();
+        Image image = scoreBoard.transform.Find("Logo1/Mask/Logo").GetComponent<Image>();
         StartCoroutine(LoadImage(image, data.team1.logoUrl));
 
-        image = scoreBoard.transform.Find("Logo2/Logo").GetComponent<Image>();
+        image = scoreBoard.transform.Find("Logo2/Mask/Logo").GetComponent<Image>();
         StartCoroutine(LoadImage(image, data.team2.logoUrl));
 
         SetScore(data.team1.id, data.game.score1);

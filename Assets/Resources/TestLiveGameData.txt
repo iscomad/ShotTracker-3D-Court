@@ -2,7 +2,7 @@
   "game": {
     "id": "null",
     "sessionId": "d49235b3-c1a0-11e8-bc9d-0242cdbe3bf8",
-    "socketUrl": "ws://devapp.shottracker.com/live?start_token=a855572a-fe65-4e99-a577-094601962a06",
+    "socketUrl": "ws://devapp.shottracker.com/live?start_token=cfcd1bfb-7357-4519-bbc9-e828bdf78bf6",
     "score1": "28",
     "score2": "66"
   },

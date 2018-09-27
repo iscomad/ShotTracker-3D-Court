@@ -1,10 +1,10 @@
 {
   "game": {
     "id": "null",
-    "sessionId": "31517f80-c102-11e8-821e-0242cdbe3bf8",
-    "socketUrl": "ws://devapp.shottracker.com/live?start_token=2773c88e-9462-4b46-bbac-3d4641a93ea8",
-    "score1": "2",
-    "score2": "3"
+    "sessionId": "d49235b3-c1a0-11e8-bc9d-0242cdbe3bf8",
+    "socketUrl": "ws://devapp.shottracker.com/live?start_token=a855572a-fe65-4e99-a577-094601962a06",
+    "score1": "28",
+    "score2": "66"
   },
   "court": {
     "id": "8f277e8e-91ce-11e8-81f5-06a15c73f3c3",
@@ -15,7 +15,7 @@
   "team1": {
     "id": "469",
     "name": "TestTeamAlpha",
-    "jerseyColor": "#F26522",
+    "jerseyColor": "#FFFFFF",
     "logoUrl": "http://devapp.shottracker.com/v2/imageservice/6b2b5416-5655-11e7-8995-06a15c73f3c3/",
     "players": [
       {
@@ -26,29 +26,29 @@
       {
         "id": "3728",
         "name": "Player 2",
-        "number": "2"
+        "number": "15"
       },
       {
         "id": "3999",
         "name": "Player 3",
-        "number": "3"
+        "number": "13"
       },
       {
         "id": "4000",
         "name": "Player 4",
-        "number": "4"
+        "number": "0"
       },
       {
         "id": "5450",
         "name": "Player 5",
-        "number": "5"
+        "number": "0"
       }
     ]
   },
   "team2": {
     "id": "470",
     "name": "TestTeamBravo",
-    "jerseyColor": "#D3D3D3",
+    "jerseyColor": "#404040",
     "logoUrl": "",
     "players": [
       {

@@ -9,10 +9,10 @@ using System.Collections;
 
 public class Main : MonoBehaviour
 {
-    public GameObject ball;
     public GameObject team1Pool;
     public GameObject team2Pool;
     public GameObject scoreBoard;
+    public GameObject ballsPool;
 
     WebSocket courtSocket;
     WebSocket scoreSocket;
@@ -21,6 +21,7 @@ public class Main : MonoBehaviour
 
     Dictionary<string, GameObject> team1Dict = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> team2Dict = new Dictionary<string, GameObject>();
+    Dictionary<string, GameObject> ballDict = new Dictionary<string, GameObject>();
 
     Data liveGameData;
 
@@ -138,7 +139,7 @@ public class Main : MonoBehaviour
         );
     }
 
-    void OnMessageHandler(object sender, WebSocketSharp.MessageEventArgs e)
+    void OnMessageHandler(object sender, MessageEventArgs e)
     {
         string message = "WebSocket server said: " + e.Data;
         //Debug.Log(message);
@@ -147,11 +148,17 @@ public class Main : MonoBehaviour
         SocketEntity entity = JsonUtility.FromJson<SocketEntity>(jsonString);
         if (entity.data.bid > 0)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() => SetBallPosition(entity.data.y, entity.data.x));
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                SetBallPosition(entity.data.bid + "", entity.data.y, entity.data.x);
+            });
         }
         else if (entity.data.pid > 0)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() => SetPlayerPosition(entity.data.pid + "", entity.data.y, entity.data.x));
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                SetPlayerPosition(entity.data.pid + "", entity.data.y, entity.data.x);
+            });
         }
     }
 
@@ -242,8 +249,30 @@ public class Main : MonoBehaviour
         }
     }
 
-    void SetBallPosition(int x, int y)
+    void SetBallPosition(string id, int x, int y)
     {
+        GameObject ball = null;
+        if (!ballDict.ContainsKey(id))
+        {
+            for (int i = 0; i < ballsPool.transform.childCount; i++) 
+            {
+                GameObject newBall = ballsPool.transform.GetChild(i).gameObject;
+                if (!ballDict.ContainsValue(newBall)) 
+                {
+                    ball = newBall;
+                    break;
+                }
+            }
+            if (ball == null) 
+            {
+                Debug.LogError("No balls left in the pool");
+                return;
+            }
+
+            ballDict.Add(id, ball);
+        } else {
+            ball = ballDict[id];
+        }
         SetGameObjectPosition(ball, x, y);
     }
 

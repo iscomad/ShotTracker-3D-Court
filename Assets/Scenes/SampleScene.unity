@@ -3222,7 +3222,7 @@ GameObject:
   - component: {fileID: 1487101091}
   - component: {fileID: 1487101090}
   m_Layer: 5
-  m_Name: Period
+  m_Name: Session
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

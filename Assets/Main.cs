@@ -16,6 +16,7 @@ public class Main : MonoBehaviour
 
     WebSocket courtSocket;
     WebSocket scoreSocket;
+    WebSocket sessionSocket;
     const float WIDTH = 26440f;
     const float HEIGHT = 14760f;
 
@@ -54,6 +55,7 @@ public class Main : MonoBehaviour
 
         StartCourtSocket();
         StartScoreSocket();
+        StartSessionSocket();
     }
 
     void SetupScoreBoard(Data data)
@@ -71,6 +73,8 @@ public class Main : MonoBehaviour
 
         SetScore(data.team1.id, data.game.score1);
         SetScore(data.team2.id, data.game.score2);
+
+        SetSession();
     }
 
     string ReadFromTestFile()
@@ -113,12 +117,19 @@ public class Main : MonoBehaviour
     #region Court Socket
     void StartCourtSocket()
     {
-        courtSocket = new WebSocket(liveGameData.game.socketUrl);
+        if (courtSocket == null) 
+        {
+            courtSocket = new WebSocket(liveGameData.game.socketUrl);
 
-        courtSocket.OnOpen += OnOpenHandler;
-        courtSocket.OnMessage += OnMessageHandler;
-        courtSocket.OnClose += OnCloseHandler;
-        courtSocket.OnError += OnErrorHandler;
+            courtSocket.OnOpen += OnOpenHandler;
+            courtSocket.OnMessage += OnMessageHandler;
+            courtSocket.OnClose += OnCloseHandler;
+            courtSocket.OnError += OnErrorHandler;
+        }
+        if (courtSocket.IsAlive) 
+        {
+            courtSocket.Close();
+        }
 
         courtSocket.ConnectAsync();
     }
@@ -133,8 +144,9 @@ public class Main : MonoBehaviour
     {
         string message = "WebSocket connected!";
         //Debug.Log(message);
+        string sessionId = liveGameData.game.sessions[liveGameData.game.sessions.Length - 1];
         courtSocket.SendAsync(
-            "{ \"action\": \"subscribe\",\"sessionId\": \"" + liveGameData.game.sessionId + "\",\"source\": \"court\"}",
+            "{ \"action\": \"subscribe\",\"sessionId\": \"" + sessionId + "\",\"source\": \"court\"}",
             OnSendComplete
         );
     }
@@ -182,12 +194,19 @@ public class Main : MonoBehaviour
     #region Score Socket
     void StartScoreSocket()
     {
-        scoreSocket = new WebSocket(liveGameData.game.socketUrl);
+        if (scoreSocket == null)
+        {
+            scoreSocket = new WebSocket(liveGameData.game.socketUrl);
 
-        scoreSocket.OnOpen += OnScoreWsOpenHandler;
-        scoreSocket.OnMessage += OnScoreWsMessageHandler;
-        scoreSocket.OnClose += OnScoreWsCloseHandler;
-        scoreSocket.OnError += OnScoreWsErrorHandler;
+            scoreSocket.OnOpen += OnScoreWsOpenHandler;
+            scoreSocket.OnMessage += OnScoreWsMessageHandler;
+            scoreSocket.OnClose += OnScoreWsCloseHandler;
+            scoreSocket.OnError += OnScoreWsErrorHandler;
+        }
+        if (scoreSocket.IsAlive) 
+        {
+            scoreSocket.Close();
+        }
 
         scoreSocket.ConnectAsync();
     }
@@ -196,8 +215,9 @@ public class Main : MonoBehaviour
     {
         string message = "Score WebSocket connected!";
         Debug.Log(message);
+        string sessionId = liveGameData.game.sessions[liveGameData.game.sessions.Length - 1];
         scoreSocket.SendAsync(
-            "{ \"action\": \"subscribe\",\"sessionId\": \"" + liveGameData.game.sessionId + "\",\"source\": \"stats\"}",
+            "{ \"action\": \"subscribe\",\"sessionId\": \"" + sessionId + "\",\"source\": \"stats\"}",
             OnSendComplete
         );
     }
@@ -236,6 +256,130 @@ public class Main : MonoBehaviour
         Debug.Log(message);
     }
     #endregion
+
+    #region Session Socket
+    void StartSessionSocket() 
+    {
+        if (sessionSocket == null) 
+        {
+            sessionSocket = new WebSocket(liveGameData.game.socketUrl);
+
+            sessionSocket.OnOpen += OnSessionWsOpenHandler;
+            sessionSocket.OnMessage += OnSessionWsMessageHandler;
+            sessionSocket.OnClose += OnSessionWsCloseHandler;
+            sessionSocket.OnError += OnSessionWsErrorHandler;
+        }
+        if (sessionSocket.IsAlive)
+        {
+            sessionSocket.Close();
+        }
+
+        sessionSocket.ConnectAsync();
+    }
+
+    void OnSessionWsOpenHandler(object sender, EventArgs e)
+    {
+        string message = "Session WebSocket connected!";
+        Debug.Log(message);
+        sessionSocket.SendAsync(
+            "{ \"action\": \"subscribe\",\"sessionId\": \"" + liveGameData.game.facilityId + "\",\"source\": \"facility\"}",
+            OnSendComplete
+        );
+    }
+
+    void OnSessionWsMessageHandler(object sender, MessageEventArgs e)
+    {
+        string message = "Session WebSocket server said: " + e.Data;
+        Debug.Log(message);
+
+        string jsonString = System.Text.Encoding.UTF8.GetString(e.RawData);
+        SocketEntity entity = JsonUtility.FromJson<SocketEntity>(jsonString);
+
+        float score = entity.data.stats.TEAM_SCORE;
+        if ("SESSION".Equals(entity.data.type))
+        {
+            if ("STARTED".Equals(entity.data.data.status)) 
+            {
+                string newSessionId = entity.data.data.sessionId;
+                int newSize = liveGameData.game.sessions.Length + 1;
+                Array.Resize(ref liveGameData.game.sessions, newSize);
+                liveGameData.game.sessions[newSize - 1] = newSessionId;
+
+                Debug.Log("new sessions: " + string.Join(", ", liveGameData.game.sessions));
+                UnityMainThreadDispatcher.Instance().Enqueue(OnSessionChanged);
+            }
+        } 
+        else if ("GAME".Equals(entity.data.type))
+        {
+            if ("GAME_END".Equals(entity.data.data.status)) 
+            {
+                UnityMainThreadDispatcher.Instance().Enqueue(SetGameEnded);
+            }
+        }
+    }
+
+    void OnSessionChanged()
+    {
+        SetSession();
+        StartCourtSocket();
+        StartScoreSocket();
+    }
+
+    void OnSessionWsCloseHandler(object sender, CloseEventArgs e)
+    {
+        string message = "Session WebSocket closed with code: " + e.Code + " and reason: " + e.Reason;
+        Debug.Log(message);
+        if (e.Code == 1006)
+        {
+            StartScoreSocket();
+        }
+    }
+
+    void OnSessionWsErrorHandler(object sender, WebSocketSharp.ErrorEventArgs e)
+    {
+        string message = "Session WebSocket connection failure: " + e.Message;
+        Debug.Log(message);
+    }
+    #endregion
+
+    void SetGameEnded()
+    {
+        SetSessionText("final");
+    }
+
+    void SetSession()
+    {
+        SetSessionText(GetSessionText(liveGameData.game.roundType, liveGameData.game.sessions));
+    }
+
+    void SetSessionText(string text) 
+    {
+        Text sessionText = scoreBoard.transform.Find("Session/Text").GetComponent<Text>();
+        sessionText.text = text;
+    }
+
+    string GetSessionText(string type, string[] sessions)
+    {
+        string text = (sessions.Length) + "";
+        if ("HALF".Equals(type))
+        {
+            if (sessions.Length > 2) 
+            {
+                return "OT";
+            }
+            text += "H";
+        }
+        else
+        {
+            if (sessions.Length > 4)
+            {
+                return "OT";
+            }
+            text += "Q";
+        }
+
+        return text;
+    }
 
     void SetPlayerPosition(string playerId, int x, int y)
     {
@@ -380,7 +524,9 @@ public class Game
 {
     public string id;
     public string socketUrl;
-    public string sessionId;
+    public string[] sessions;
+    public string facilityId;
+    public string roundType;
 
     public string score1;
     public string score2;

@@ -15,7 +15,7 @@ public class Main : MonoBehaviour
     public GameObject ballsPool;
 
     WebSocket courtSocket;
-    WebSocket scoreSocket;
+    WebSocket statsSocket;
     WebSocket sessionSocket;
     const float WIDTH = 26440f;
     const float HEIGHT = 14760f;
@@ -54,7 +54,7 @@ public class Main : MonoBehaviour
         SetupScoreBoard(liveGameData);
 
         StartCourtSocket();
-        StartScoreSocket();
+        StartStatsSocket();
         StartSessionSocket();
     }
 
@@ -196,45 +196,45 @@ public class Main : MonoBehaviour
     }
     #endregion
 
-    #region Score Socket
-    void StartScoreSocket()
+    #region Stats Socket
+    void StartStatsSocket()
     {
-        if (scoreSocket == null)
+        if (statsSocket == null)
         {
-            scoreSocket = new WebSocket(liveGameData.game.socketUrl);
+            statsSocket = new WebSocket(liveGameData.game.socketUrl);
 
-            scoreSocket.OnOpen += OnScoreWsOpenHandler;
-            scoreSocket.OnMessage += OnScoreWsMessageHandler;
-            scoreSocket.OnClose += OnScoreWsCloseHandler;
-            scoreSocket.OnError += OnScoreWsErrorHandler;
+            statsSocket.OnOpen += OnStatsWsOpenHandler;
+            statsSocket.OnMessage += OnStatsWsMessageHandler;
+            statsSocket.OnClose += OnStatsWsCloseHandler;
+            statsSocket.OnError += OnStatsWsErrorHandler;
         }
-        if (scoreSocket.IsAlive) 
+        if (statsSocket.IsAlive) 
         {
-            scoreSocket.Close();
+            statsSocket.Close();
         }
 
-        scoreSocket.ConnectAsync();
+        statsSocket.ConnectAsync();
     }
 
-    void OnScoreWsOpenHandler(object sender, EventArgs e)
+    void OnStatsWsOpenHandler(object sender, EventArgs e)
     {
-        string message = "Score WebSocket connected!";
+        string message = "Stats WebSocket connected!";
         Debug.Log(message);
-        SendScoreSessionMessage();
+        SendStatsSessionMessage();
     }
 
-    void SendScoreSessionMessage()
+    void SendStatsSessionMessage()
     {
         string sessionId = liveGameData.game.sessions[liveGameData.game.sessions.Length - 1];
-        scoreSocket.SendAsync(
+        statsSocket.SendAsync(
             "{ \"action\": \"subscribe\",\"sessionId\": \"" + sessionId + "\",\"source\": \"stats\"}",
             OnSendComplete
         );
     }
 
-    void OnScoreWsMessageHandler(object sender, MessageEventArgs e)
+    void OnStatsWsMessageHandler(object sender, MessageEventArgs e)
     {
-        string message = "Score WebSocket server said: " + e.Data;
+        string message = "Stats WebSocket server said: " + e.Data;
         Debug.Log(message);
 
         string jsonString = System.Text.Encoding.UTF8.GetString(e.RawData);
@@ -250,19 +250,19 @@ public class Main : MonoBehaviour
         }
     }
 
-    void OnScoreWsCloseHandler(object sender, CloseEventArgs e)
+    void OnStatsWsCloseHandler(object sender, CloseEventArgs e)
     {
-        string message = "Score WebSocket closed with code: " + e.Code + " and reason: " + e.Reason;
+        string message = "Stats WebSocket closed with code: " + e.Code + " and reason: " + e.Reason;
         Debug.Log(message);
         if (e.Code == 1006)
         {
-            StartScoreSocket();
+            StartStatsSocket();
         }
     }
 
-    void OnScoreWsErrorHandler(object sender, WebSocketSharp.ErrorEventArgs e)
+    void OnStatsWsErrorHandler(object sender, WebSocketSharp.ErrorEventArgs e)
     {
-        string message = "Score WebSocket connection failure: " + e.Message;
+        string message = "Stats WebSocket connection failure: " + e.Message;
         Debug.Log(message);
     }
     #endregion
@@ -332,7 +332,7 @@ public class Main : MonoBehaviour
     {
         SetSession();
         SendCourtSessionMessage();
-        SendScoreSessionMessage();
+        SendStatsSessionMessage();
     }
 
     void OnSessionWsCloseHandler(object sender, CloseEventArgs e)
@@ -341,7 +341,7 @@ public class Main : MonoBehaviour
         Debug.Log(message);
         if (e.Code == 1006)
         {
-            StartScoreSocket();
+            StartStatsSocket();
         }
     }
 

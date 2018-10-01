@@ -61,13 +61,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\BallBehaviourScript.cs" />
     <Compile Include="Assets\CameraLookAtScript.cs" />
     <Compile Include="Assets\CoroutineExample.cs" />
-    <Compile Include="Assets\LightScript.cs" />
     <Compile Include="Assets\Main.cs" />
-    <Compile Include="Assets\MouseClickForceScript.cs" />
-    <Compile Include="Assets\PropertiesAndCoroutines.cs" />
     <Compile Include="Assets\SupportBackScript.cs" />
     <Compile Include="Assets\UnityMainThreadDispatcher.cs" />
     <None Include="Assets\3D Text Shader.shader" />

@@ -144,6 +144,11 @@ public class Main : MonoBehaviour
     {
         string message = "WebSocket connected!";
         //Debug.Log(message);
+        SendCourtSessionMessage();
+    }
+
+    void SendCourtSessionMessage()
+    {
         string sessionId = liveGameData.game.sessions[liveGameData.game.sessions.Length - 1];
         courtSocket.SendAsync(
             "{ \"action\": \"subscribe\",\"sessionId\": \"" + sessionId + "\",\"source\": \"court\"}",
@@ -215,6 +220,11 @@ public class Main : MonoBehaviour
     {
         string message = "Score WebSocket connected!";
         Debug.Log(message);
+        SendScoreSessionMessage();
+    }
+
+    void SendScoreSessionMessage()
+    {
         string sessionId = liveGameData.game.sessions[liveGameData.game.sessions.Length - 1];
         scoreSocket.SendAsync(
             "{ \"action\": \"subscribe\",\"sessionId\": \"" + sessionId + "\",\"source\": \"stats\"}",
@@ -305,7 +315,7 @@ public class Main : MonoBehaviour
                 Array.Resize(ref liveGameData.game.sessions, newSize);
                 liveGameData.game.sessions[newSize - 1] = newSessionId;
 
-                Debug.Log("new sessions: " + string.Join(", ", liveGameData.game.sessions));
+                Debug.LogWarning("new sessions: " + string.Join(", ", liveGameData.game.sessions));
                 UnityMainThreadDispatcher.Instance().Enqueue(OnSessionChanged);
             }
         } 
@@ -321,8 +331,8 @@ public class Main : MonoBehaviour
     void OnSessionChanged()
     {
         SetSession();
-        StartCourtSocket();
-        StartScoreSocket();
+        SendCourtSessionMessage();
+        SendScoreSessionMessage();
     }
 
     void OnSessionWsCloseHandler(object sender, CloseEventArgs e)

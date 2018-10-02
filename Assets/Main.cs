@@ -13,9 +13,12 @@ public class Main : MonoBehaviour
     public GameObject team2Pool;
     public GameObject scoreBoard;
     public GameObject ballsPool;
+    public GameObject basket1;
+    public GameObject basket2;
 
     WebSocket courtSocket;
     WebSocket statsSocket;
+    WebSocket chartsSocket;
     WebSocket sessionSocket;
     const float WIDTH = 26440f;
     const float HEIGHT = 14760f;
@@ -55,6 +58,7 @@ public class Main : MonoBehaviour
 
         StartCourtSocket();
         StartStatsSocket();
+        StartChartsSocket();
         StartSessionSocket();
     }
 
@@ -241,11 +245,12 @@ public class Main : MonoBehaviour
         SocketEntity entity = JsonUtility.FromJson<SocketEntity>(jsonString);
 
         float score = entity.data.stats.TEAM_SCORE;
-        if (entity.data.tid > 0 && score >= 0)
+        int teamId = entity.data.tid;
+        if (teamId > 0 && score >= 0)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                SetScore(entity.data.tid.ToString(), ((int)score).ToString());
+                SetScore(teamId.ToString(), ((int)score).ToString());
             });
         }
     }
@@ -263,6 +268,92 @@ public class Main : MonoBehaviour
     void OnStatsWsErrorHandler(object sender, WebSocketSharp.ErrorEventArgs e)
     {
         string message = "Stats WebSocket connection failure: " + e.Message;
+        Debug.Log(message);
+    }
+    #endregion
+
+    #region Charts Socket
+    void StartChartsSocket()
+    {
+        if (chartsSocket == null)
+        {
+            chartsSocket = new WebSocket(liveGameData.game.socketUrl);
+
+            chartsSocket.OnOpen += OnChartsWsOpenHandler;
+            chartsSocket.OnMessage += OnChartsWsMessageHandler;
+            chartsSocket.OnClose += OnChartsWsCloseHandler;
+            chartsSocket.OnError += OnChartsWsErrorHandler;
+        }
+        if (chartsSocket.IsAlive)
+        {
+            chartsSocket.Close();
+        }
+
+        chartsSocket.ConnectAsync();
+    }
+
+    void OnChartsWsOpenHandler(object sender, EventArgs e)
+    {
+        string message = "Charts WebSocket connected!";
+        Debug.Log(message);
+        SendChartsSessionMessage();
+    }
+
+    void SendChartsSessionMessage()
+    {
+        string sessionId = liveGameData.game.sessions[liveGameData.game.sessions.Length - 1];
+        chartsSocket.SendAsync(
+            "{ \"action\": \"subscribe\",\"sessionId\": \"" + sessionId + "\",\"source\": \"chart\"}",
+            OnSendComplete
+        );
+    }
+
+    void OnChartsWsMessageHandler(object sender, MessageEventArgs e)
+    {
+        string message = "Charts WebSocket server said: " + e.Data;
+        Debug.Log(message);
+
+        string jsonString = System.Text.Encoding.UTF8.GetString(e.RawData);
+        SocketEntity entity = JsonUtility.FromJson<SocketEntity>(jsonString);
+
+        int teamId = entity.data.tid;
+        string shotType = entity.data.st;
+        if (shotType != null && !shotType.IsNullOrEmpty()) {
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                MakeMissScript script = null;
+                if (liveGameData.team1.id.Equals(teamId + "")) {
+                    script = basket2.GetComponent<MakeMissScript>();
+                } else if (liveGameData.team2.id.Equals(teamId + "")) {
+                    script = basket1.GetComponent<MakeMissScript>();
+                }
+                if (script != null) {
+                    if (shotType.Equals("MAKE"))
+                    {
+                        script.AnimateMake();
+                    }
+                    else
+                    {
+                        script.AnimateMiss();
+                    }
+
+                }
+            });
+        }
+    }
+
+    void OnChartsWsCloseHandler(object sender, CloseEventArgs e)
+    {
+        string message = "Charts WebSocket closed with code: " + e.Code + " and reason: " + e.Reason;
+        Debug.Log(message);
+        if (e.Code == 1006)
+        {
+            StartChartsSocket();
+        }
+    }
+
+    void OnChartsWsErrorHandler(object sender, WebSocketSharp.ErrorEventArgs e)
+    {
+        string message = "Charts WebSocket connection failure: " + e.Message;
         Debug.Log(message);
     }
     #endregion
@@ -305,7 +396,6 @@ public class Main : MonoBehaviour
         string jsonString = System.Text.Encoding.UTF8.GetString(e.RawData);
         SocketEntity entity = JsonUtility.FromJson<SocketEntity>(jsonString);
 
-        float score = entity.data.stats.TEAM_SCORE;
         if ("SESSION".Equals(entity.data.type))
         {
             if ("STARTED".Equals(entity.data.data.status)) 
@@ -502,6 +592,7 @@ public class SocketData
     public int x;
     public int y;
     public string type;
+    public string st;
     public EventData data;
     public Stat stats;
 

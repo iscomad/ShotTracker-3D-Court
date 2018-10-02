@@ -15,11 +15,13 @@ public class Main : MonoBehaviour
     public GameObject ballsPool;
     public GameObject basket1;
     public GameObject basket2;
+    public GameObject audioObject;
 
     WebSocket courtSocket;
     WebSocket statsSocket;
     WebSocket chartsSocket;
     WebSocket sessionSocket;
+    MakeMissSoundScript makeMissSoundScript;
     const float WIDTH = 26440f;
     const float HEIGHT = 14760f;
 
@@ -31,6 +33,7 @@ public class Main : MonoBehaviour
 
     void Start()
     {
+        makeMissSoundScript = audioObject.GetComponent<MakeMissSoundScript>();
         AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         AndroidJavaObject currentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 
@@ -320,20 +323,20 @@ public class Main : MonoBehaviour
         string shotType = entity.data.st;
         if (shotType != null && !shotType.IsNullOrEmpty()) {
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                MakeMissScript script = null;
+                MakeMissAnimationScript script = null;
                 if (liveGameData.team1.id.Equals(teamId + "")) {
-                    script = basket2.GetComponent<MakeMissScript>();
+                    script = basket2.GetComponent<MakeMissAnimationScript>();
                 } else if (liveGameData.team2.id.Equals(teamId + "")) {
-                    script = basket1.GetComponent<MakeMissScript>();
+                    script = basket1.GetComponent<MakeMissAnimationScript>();
                 }
                 if (script != null) {
-                    if (shotType.Equals("MAKE"))
-                    {
+                    if (shotType.Equals("MAKE")) {
                         script.AnimateMake();
+                        makeMissSoundScript.PlayMakeAudio();
                     }
-                    else
-                    {
+                    else {
                         script.AnimateMiss();
+                        makeMissSoundScript.PlayMissAudio();
                     }
 
                 }

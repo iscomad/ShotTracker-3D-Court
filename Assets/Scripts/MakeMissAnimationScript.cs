@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class MakeMissScript : MonoBehaviour {
+public class MakeMissAnimationScript : MonoBehaviour {
 
     private Material innerBoxMaterial;
     private Material outerBoxMaterial;
@@ -27,7 +27,7 @@ public class MakeMissScript : MonoBehaviour {
         innerBoxMaterial.color = Color.green;
         outerBoxMaterial.color = Color.green;
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.5f);
 
         innerBoxMaterial.color = innerBoxColor;
         outerBoxMaterial.color = outerBoxColor;
@@ -37,7 +37,7 @@ public class MakeMissScript : MonoBehaviour {
         innerBoxMaterial.color = Color.red;
         outerBoxMaterial.color = Color.red;
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.5f);
 
         innerBoxMaterial.color = innerBoxColor;
         outerBoxMaterial.color = outerBoxColor;

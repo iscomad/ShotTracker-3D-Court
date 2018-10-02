@@ -6,9 +6,9 @@
     ],
     "facilityId": "6e4118d4-2e50-11e6-b4a4-deecc6e6f586",
     "roundType": "HALF",
-    "socketUrl": "ws://devapp.shottracker.com/live?start_token=f60fcf10-bed9-4fa1-99b4-95d1fea4e570",
-    "score1": "12",
-    "score2": "27"
+    "socketUrl": "ws://devapp.shottracker.com/live?start_token=8fcaad45-1de3-446b-977f-1381ef56c1c4",
+    "score1": "0",
+    "score2": "0"
   },
   "court": {
     "id": "8f277e8e-91ce-11e8-81f5-06a15c73f3c3",

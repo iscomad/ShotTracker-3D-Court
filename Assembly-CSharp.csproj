@@ -61,13 +61,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\CameraLookAtScript.cs" />
-    <Compile Include="Assets\CoroutineExample.cs" />
-    <Compile Include="Assets\Main.cs" />
-    <Compile Include="Assets\MakeMissScript.cs" />
-    <Compile Include="Assets\SupportBackScript.cs" />
-    <Compile Include="Assets\UnityMainThreadDispatcher.cs" />
-    <None Include="Assets\3D Text Shader.shader" />
+    <Compile Include="Assets\Scripts\CameraLookAtScript.cs" />
+    <Compile Include="Assets\Scripts\CoroutineExample.cs" />
+    <Compile Include="Assets\Scripts\Main.cs" />
+    <Compile Include="Assets\Scripts\MakeMissScript.cs" />
+    <Compile Include="Assets\Scripts\SupportBackScript.cs" />
+    <Compile Include="Assets\Scripts\UnityMainThreadDispatcher.cs" />
+    <None Include="Assets\Shaders\3D Text Shader.shader" />
     <None Include="Assets\Resources\TestLiveGameData.txt" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>/Users/Isco/UnityProjects/ShotTracker 3D Court/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
@@ -276,14 +276,14 @@
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
-    <Reference Include="websocket-sharp">
-      <HintPath>/Users/Isco/UnityProjects/ShotTracker 3D Court/Assets/websocket-sharp.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.Analytics">
       <HintPath>/Users/Isco/Library/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.StandardEvents">
       <HintPath>/Users/Isco/Library/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="websocket-sharp">
+      <HintPath>/Users/Isco/UnityProjects/ShotTracker 3D Court/Assets/Plugins/websocket-sharp.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>/Applications/Unity/Unity.app/Contents/MonoBleedingEdge/lib/mono/unity/mscorlib.dll</HintPath>

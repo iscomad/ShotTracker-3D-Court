@@ -31,9 +31,18 @@ public class Main : MonoBehaviour
 
     Data liveGameData;
 
+    Text sessionText;
+    Text team1ScoreText;
+    Text team2ScoreText;
+
     void Start()
     {
         makeMissSoundScript = audioObject.GetComponent<MakeMissSoundScript>();
+
+        sessionText = scoreBoard.transform.Find("Session/Text").GetComponent<Text>();
+        team1ScoreText = scoreBoard.transform.Find("Score1").GetComponent<Text>();
+        team2ScoreText = scoreBoard.transform.Find("Score2").GetComponent<Text>();
+
         AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
         AndroidJavaObject currentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 
@@ -457,7 +466,6 @@ public class Main : MonoBehaviour
 
     void SetSessionText(string text) 
     {
-        Text sessionText = scoreBoard.transform.Find("Session/Text").GetComponent<Text>();
         sessionText.text = text;
     }
 
@@ -536,18 +544,13 @@ public class Main : MonoBehaviour
 
     void SetScore(string teamId, string score)
     {
-        Text text = null;
         if (teamId.Equals(liveGameData.team1.id))
         {
-            text = scoreBoard.transform.Find("Score1").GetComponent<Text>();
+            team1ScoreText.text = score;
         }
         else if (teamId.Equals(liveGameData.team2.id))
         {
-            text = scoreBoard.transform.Find("Score2").GetComponent<Text>();
-        }
-        if (text != null)
-        {
-            text.text = score;
+            team2ScoreText.text = score;
         }
     }
 

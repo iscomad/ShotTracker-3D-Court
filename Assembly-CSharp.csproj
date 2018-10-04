@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\Main.cs" />
      <Compile Include="Assets\Scripts\MakeMissAnimationScript.cs" />
      <Compile Include="Assets\Scripts\MakeMissSoundScript.cs" />
+     <Compile Include="Assets\Scripts\SessionSocket.cs" />
      <Compile Include="Assets\Scripts\StatsSocket.cs" />
      <Compile Include="Assets\Scripts\SupportBackScript.cs" />
      <Compile Include="Assets\Scripts\UnityMainThreadDispatcher.cs" />

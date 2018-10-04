@@ -2,13 +2,15 @@
   "game": {
     "id": "null",
     "sessions": [
-      "acd7a049-c7f4-11e8-85d8-0242da1194a8"
+      "acd7a049-c7f4-11e8-85d8-0242da1194a8",
+      "4c52ce1a-c7f5-11e8-85d8-0242da1194a8",
+      "58de528b-c7f5-11e8-85d8-0242da1194a8"
     ],
     "facilityId": "6e4118d4-2e50-11e6-b4a4-deecc6e6f586",
     "roundType": "QUARTER",
-    "socketUrl": "ws://devapp.shottracker.com/live?start_token=60a13a0a-ad66-42d5-9ed3-5b4eabc7d6a3",
-    "score1": "2",
-    "score2": "9"
+    "socketUrl": "ws://devapp.shottracker.com/live?start_token=2a8de6fb-2a03-403e-864b-0c32a4861b46",
+    "score1": "12",
+    "score2": "27"
   },
   "court": {
     "id": "8f277e8e-91ce-11e8-81f5-06a15c73f3c3",

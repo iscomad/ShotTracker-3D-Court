@@ -18,7 +18,7 @@ public class Main : MonoBehaviour
     public GameObject audioObject;
 
     CourtSocket courtSocket;
-    WebSocket statsSocket;
+    StatsSocket statsSocket;
     WebSocket chartsSocket;
     WebSocket sessionSocket;
     MakeMissSoundScript makeMissSoundScript;
@@ -146,77 +146,13 @@ public class Main : MonoBehaviour
         //Debug.Log(message);
     }
 
-    #region Stats Socket
     void StartStatsSocket()
     {
-        if (statsSocket == null)
-        {
-            statsSocket = new WebSocket(liveGameData.game.socketUrl);
-
-            statsSocket.OnOpen += OnStatsWsOpenHandler;
-            statsSocket.OnMessage += OnStatsWsMessageHandler;
-            statsSocket.OnClose += OnStatsWsCloseHandler;
-            statsSocket.OnError += OnStatsWsErrorHandler;
-        }
-        if (statsSocket.IsAlive) 
-        {
-            statsSocket.Close();
-        }
-
+        statsSocket = new StatsSocket(liveGameData) {
+            OnScoreChanged = SetScore
+        };
         statsSocket.ConnectAsync();
     }
-
-    void OnStatsWsOpenHandler(object sender, EventArgs e)
-    {
-        string message = "Stats WebSocket connected!";
-        Debug.Log(message);
-        SendStatsSessionMessage();
-    }
-
-    void SendStatsSessionMessage()
-    {
-        string sessionId = liveGameData.game.sessions[liveGameData.game.sessions.Length - 1];
-        statsSocket.SendAsync(
-            "{ \"action\": \"subscribe\",\"sessionId\": \"" + sessionId + "\",\"source\": \"stats\"}",
-            OnSendComplete
-        );
-    }
-
-    void OnStatsWsMessageHandler(object sender, MessageEventArgs e)
-    {
-        string message = "Stats WebSocket server said: " + e.Data;
-        Debug.Log(message);
-
-        string jsonString = System.Text.Encoding.UTF8.GetString(e.RawData);
-        SocketEntity entity = JsonUtility.FromJson<SocketEntity>(jsonString);
-
-        float score = entity.data.stats.TEAM_SCORE;
-        int teamId = entity.data.tid;
-        if (teamId > 0 && score >= 0)
-        {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
-            {
-                SetScore(teamId.ToString(), ((int)score).ToString());
-            });
-        }
-    }
-
-    void OnStatsWsCloseHandler(object sender, CloseEventArgs e)
-    {
-        string message = "Stats WebSocket closed with code: " + e.Code + " and reason: " + e.Reason;
-        Debug.Log(message);
-        if (e.Code == 1006)
-        {
-            StartStatsSocket();
-        }
-    }
-
-    void OnStatsWsErrorHandler(object sender, WebSocketSharp.ErrorEventArgs e)
-    {
-        string message = "Stats WebSocket connection failure: " + e.Message;
-        Debug.Log(message);
-    }
-    #endregion
 
     #region Charts Socket
     void StartChartsSocket()
@@ -368,7 +304,7 @@ public class Main : MonoBehaviour
     {
         SetSession();
         courtSocket.SubscribeToCourt();
-        SendStatsSessionMessage();
+        statsSocket.SubscribeToStats();
     }
 
     void OnSessionWsCloseHandler(object sender, CloseEventArgs e)
@@ -377,7 +313,7 @@ public class Main : MonoBehaviour
         Debug.Log(message);
         if (e.Code == 1006)
         {
-            StartStatsSocket();
+            StartSessionSocket();
         }
     }
 

@@ -57,6 +57,13 @@
      <Compile Include="Assets\Scripts\ChartSocket.cs" />
      <Compile Include="Assets\Scripts\CoroutineExample.cs" />
      <Compile Include="Assets\Scripts\CourtSocket.cs" />
+     <Compile Include="Assets\Scripts\Data\Court.cs" />
+     <Compile Include="Assets\Scripts\Data\Data.cs" />
+     <Compile Include="Assets\Scripts\Data\Game.cs" />
+     <Compile Include="Assets\Scripts\Data\Player.cs" />
+     <Compile Include="Assets\Scripts\Data\SocketData.cs" />
+     <Compile Include="Assets\Scripts\Data\SocketEntity.cs" />
+     <Compile Include="Assets\Scripts\Data\Team.cs" />
      <Compile Include="Assets\Scripts\Main.cs" />
      <Compile Include="Assets\Scripts\MakeMissAnimationScript.cs" />
      <Compile Include="Assets\Scripts\MakeMissSoundScript.cs" />
@@ -66,18 +73,6 @@
      <Compile Include="Assets\Scripts\UnityMainThreadDispatcher.cs" />
      <None Include="Assets\Shaders\3D Text Shader.shader" />
      <None Include="Assets\Resources\TestLiveGameData.txt" />
- <Reference Include="UnityEditor.StandardEvents">
- <HintPath>/Users/Isco/UnityProjects/ShotTracker 3D Court/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
- </Reference>
- <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>/Users/Isco/UnityProjects/ShotTracker 3D Court/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.PackageManagerUI.Editor">
- <HintPath>/Users/Isco/UnityProjects/ShotTracker 3D Court/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.TextMeshPro">
- <HintPath>/Users/Isco/UnityProjects/ShotTracker 3D Court/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>/Applications/Unity/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
  </Reference>

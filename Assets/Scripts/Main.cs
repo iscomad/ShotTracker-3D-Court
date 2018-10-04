@@ -19,9 +19,11 @@ public class Main : MonoBehaviour
 
     CourtSocket courtSocket;
     StatsSocket statsSocket;
-    WebSocket chartsSocket;
+    ChartSocket chartSocket;
     WebSocket sessionSocket;
     MakeMissSoundScript makeMissSoundScript;
+    MakeMissAnimationScript basketAnimation1;
+    MakeMissAnimationScript basketAnimation2;
     const float WIDTH = 26440f;
     const float HEIGHT = 14760f;
 
@@ -38,6 +40,8 @@ public class Main : MonoBehaviour
     void Start()
     {
         makeMissSoundScript = audioObject.GetComponent<MakeMissSoundScript>();
+        basketAnimation1 = basket1.GetComponent<MakeMissAnimationScript>();
+        basketAnimation2 = basket2.GetComponent<MakeMissAnimationScript>();
 
         sessionText = scoreBoard.transform.Find("Session/Text").GetComponent<Text>();
         team1ScoreText = scoreBoard.transform.Find("Score1").GetComponent<Text>();
@@ -154,92 +158,33 @@ public class Main : MonoBehaviour
         statsSocket.ConnectAsync();
     }
 
-    #region Charts Socket
     void StartChartsSocket()
     {
-        if (chartsSocket == null)
-        {
-            chartsSocket = new WebSocket(liveGameData.game.socketUrl);
+        chartSocket = new ChartSocket(liveGameData) {
+            OnMake = OnShotMake,
+            OnMiss = OnShotMiss
+        };
+        chartSocket.ConnectAsync();
+    }
 
-            chartsSocket.OnOpen += OnChartsWsOpenHandler;
-            chartsSocket.OnMessage += OnChartsWsMessageHandler;
-            chartsSocket.OnClose += OnChartsWsCloseHandler;
-            chartsSocket.OnError += OnChartsWsErrorHandler;
+    void OnShotMake(string tid) {
+        if (liveGameData.team1.id.Equals(tid)) {
+            basketAnimation2.AnimateMake();
+        } else if (liveGameData.team2.id.Equals(tid)) {
+            basketAnimation1.AnimateMake();
         }
-        if (chartsSocket.IsAlive)
-        {
-            chartsSocket.Close();
+        makeMissSoundScript.PlayMakeAudio();
+    }
+
+    void OnShotMiss(string tid) {
+        if (liveGameData.team1.id.Equals(tid)) {
+            basketAnimation2.AnimateMiss();
+        } else if (liveGameData.team2.id.Equals(tid)) {
+            basketAnimation1.AnimateMiss();
         }
-
-        chartsSocket.ConnectAsync();
+        makeMissSoundScript.PlayMissAudio();
     }
-
-    void OnChartsWsOpenHandler(object sender, EventArgs e)
-    {
-        string message = "Charts WebSocket connected!";
-        Debug.Log(message);
-        SendChartsSessionMessage();
-    }
-
-    void SendChartsSessionMessage()
-    {
-        string sessionId = liveGameData.game.sessions[liveGameData.game.sessions.Length - 1];
-        chartsSocket.SendAsync(
-            "{ \"action\": \"subscribe\",\"sessionId\": \"" + sessionId + "\",\"source\": \"chart\"}",
-            OnSendComplete
-        );
-    }
-
-    void OnChartsWsMessageHandler(object sender, MessageEventArgs e)
-    {
-        string message = "Charts WebSocket server said: " + e.Data;
-        Debug.Log(message);
-
-        string jsonString = System.Text.Encoding.UTF8.GetString(e.RawData);
-        SocketEntity entity = JsonUtility.FromJson<SocketEntity>(jsonString);
-
-        int teamId = entity.data.tid;
-        string shotType = entity.data.st;
-        if (shotType != null && !shotType.IsNullOrEmpty()) {
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                MakeMissAnimationScript script = null;
-                if (liveGameData.team1.id.Equals(teamId + "")) {
-                    script = basket2.GetComponent<MakeMissAnimationScript>();
-                } else if (liveGameData.team2.id.Equals(teamId + "")) {
-                    script = basket1.GetComponent<MakeMissAnimationScript>();
-                }
-                if (script != null) {
-                    if (shotType.Equals("MAKE")) {
-                        script.AnimateMake();
-                        makeMissSoundScript.PlayMakeAudio();
-                    }
-                    else {
-                        script.AnimateMiss();
-                        makeMissSoundScript.PlayMissAudio();
-                    }
-
-                }
-            });
-        }
-    }
-
-    void OnChartsWsCloseHandler(object sender, CloseEventArgs e)
-    {
-        string message = "Charts WebSocket closed with code: " + e.Code + " and reason: " + e.Reason;
-        Debug.Log(message);
-        if (e.Code == 1006)
-        {
-            StartChartsSocket();
-        }
-    }
-
-    void OnChartsWsErrorHandler(object sender, WebSocketSharp.ErrorEventArgs e)
-    {
-        string message = "Charts WebSocket connection failure: " + e.Message;
-        Debug.Log(message);
-    }
-    #endregion
-
+    
     #region Session Socket
     void StartSessionSocket() 
     {

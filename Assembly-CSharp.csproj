@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\CameraLookAtScript.cs" />
     <Compile Include="Assets\Scripts\CoroutineExample.cs" />
+    <Compile Include="Assets\Scripts\CourtSocket.cs" />
     <Compile Include="Assets\Scripts\Main.cs" />
     <Compile Include="Assets\Scripts\MakeMissAnimationScript.cs" />
     <Compile Include="Assets\Scripts\MakeMissSoundScript.cs" />

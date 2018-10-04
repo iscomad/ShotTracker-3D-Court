@@ -17,7 +17,7 @@ public class Main : MonoBehaviour
     public GameObject basket2;
     public GameObject audioObject;
 
-    WebSocket courtSocket;
+    CourtSocket courtSocket;
     WebSocket statsSocket;
     WebSocket chartsSocket;
     WebSocket sessionSocket;
@@ -130,79 +130,14 @@ public class Main : MonoBehaviour
         }
     }
 
-    #region Court Socket
-    void StartCourtSocket()
+    void StartCourtSocket() 
     {
-        if (courtSocket == null) 
+        courtSocket = new CourtSocket(liveGameData) 
         {
-            courtSocket = new WebSocket(liveGameData.game.socketUrl);
-
-            courtSocket.OnOpen += OnOpenHandler;
-            courtSocket.OnMessage += OnMessageHandler;
-            courtSocket.OnClose += OnCloseHandler;
-            courtSocket.OnError += OnErrorHandler;
-        }
-        if (courtSocket.IsAlive) 
-        {
-            courtSocket.Close();
-        }
-
+            OnPlayerPositionChanged = SetPlayerPosition,
+            OnBallPositionChanged = SetBallPosition
+        };
         courtSocket.ConnectAsync();
-    }
-
-    void OnErrorHandler(object sender, WebSocketSharp.ErrorEventArgs e)
-    {
-        string message = "WebSocket connection failure: " + e.Message;
-        //Debug.Log(message);
-    }
-
-    void OnOpenHandler(object sender, EventArgs e)
-    {
-        string message = "WebSocket connected!";
-        //Debug.Log(message);
-        SendCourtSessionMessage();
-    }
-
-    void SendCourtSessionMessage()
-    {
-        string sessionId = liveGameData.game.sessions[liveGameData.game.sessions.Length - 1];
-        courtSocket.SendAsync(
-            "{ \"action\": \"subscribe\",\"sessionId\": \"" + sessionId + "\",\"source\": \"court\"}",
-            OnSendComplete
-        );
-    }
-
-    void OnMessageHandler(object sender, MessageEventArgs e)
-    {
-        string message = "WebSocket server said: " + e.Data;
-        //Debug.Log(message);
-
-        string jsonString = System.Text.Encoding.UTF8.GetString(e.RawData);
-        SocketEntity entity = JsonUtility.FromJson<SocketEntity>(jsonString);
-        if (entity.data.bid > 0)
-        {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
-            {
-                SetBallPosition(entity.data.bid + "", entity.data.y, entity.data.x);
-            });
-        }
-        else if (entity.data.pid > 0)
-        {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
-            {
-                SetPlayerPosition(entity.data.pid + "", entity.data.y, entity.data.x);
-            });
-        }
-    }
-
-    void OnCloseHandler(object sender, CloseEventArgs e)
-    {
-        string message = "WebSocket closed with code: " + e.Code + " and reason: " + e.Reason;
-        //Debug.Log(message);
-        if (e.Code == 1006)
-        {
-            StartCourtSocket();
-        }
     }
 
     void OnSendComplete(bool success)
@@ -210,7 +145,6 @@ public class Main : MonoBehaviour
         string message = "Message sent successfully? " + success;
         //Debug.Log(message);
     }
-    #endregion
 
     #region Stats Socket
     void StartStatsSocket()
@@ -433,7 +367,7 @@ public class Main : MonoBehaviour
     void OnSessionChanged()
     {
         SetSession();
-        SendCourtSessionMessage();
+        courtSocket.SubscribeToCourt();
         SendStatsSessionMessage();
     }
 

@@ -75,8 +75,14 @@ public class Main : MonoBehaviour
 
         StartCourtSocket();
         StartStatsSocket();
-        // StartChartsSocket();
         StartSessionSocket();
+    }
+
+    void OnDestroy()
+    {
+        courtSocket.Close();
+        statsSocket.Close();
+        sessionSocket.Close();
     }
 
     void SetupCourt(Court court) {
@@ -268,19 +274,19 @@ public class Main : MonoBehaviour
         return text;
     }
 
-    void SetPlayerPosition(string playerId, int x, int y)
+    void SetPlayerPosition(string playerId, int x, int y, int z)
     {
         if (team1Dict.ContainsKey(playerId))
         {
-            SetGameObjectPosition(team1Dict[playerId], x, y);
+            SetGameObjectPosition(team1Dict[playerId], x, y, int.MinValue);
         }
         else if (team2Dict.ContainsKey(playerId))
         {
-            SetGameObjectPosition(team2Dict[playerId], x, y);
+            SetGameObjectPosition(team2Dict[playerId], x, y, int.MinValue);
         }
     }
 
-    void SetBallPosition(string id, int x, int y)
+    void SetBallPosition(string id, int x, int y, int z)
     {
         GameObject ball = null;
         if (!ballDict.ContainsKey(id))
@@ -304,15 +310,15 @@ public class Main : MonoBehaviour
         } else {
             ball = ballDict[id];
         }
-        SetGameObjectPosition(ball, x, y);
+        SetGameObjectPosition(ball, x, y, z);
     }
 
-    void SetGameObjectPosition(GameObject gObject, int x, int y)
+    void SetGameObjectPosition(GameObject gObject, int x, int y, int z)
     {
         Court court = liveGameData.court;
         float xNew = (float)x / court.width * 9 * 2;
         float zNew = (float)y / court.height * 5 * -2;
-        float yNew = gObject.transform.position.y;
+        float yNew = z == int.MinValue ? gObject.transform.position.y : (float) z / court.width * 9 * 2 + 0.35f; // 0.1 is the height of the floor
         Vector3 target = new Vector3(xNew, yNew, zNew);
         //gObject.transform.position = target;
         StartCoroutine(MoveObject(gObject, target, 0.3f));

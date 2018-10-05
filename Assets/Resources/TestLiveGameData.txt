@@ -2,16 +2,13 @@
   "game": {
     "id": "null",
     "sessions": [
-      "acd7a049-c7f4-11e8-85d8-0242da1194a8",
-      "4c52ce1a-c7f5-11e8-85d8-0242da1194a8",
-      "58de528b-c7f5-11e8-85d8-0242da1194a8",
-      "33e607a3-c7f8-11e8-85d8-0242da1194a8"
+      "0502657e-c8bc-11e8-a617-0242972bf5fb"
     ],
     "facilityId": "6e4118d4-2e50-11e6-b4a4-deecc6e6f586",
     "roundType": "QUARTER",
-    "socketUrl": "ws://devapp.shottracker.com/live?start_token=dc1b3ce7-506d-41b9-8bf0-814f39c50ed6",
-    "score1": "18",
-    "score2": "61"
+    "socketUrl": "ws://devapp.shottracker.com/live?start_token=fbb81612-99f0-40a2-9b41-2caa1f7124d5",
+    "score1": "10",
+    "score2": "21"
   },
   "court": {
     "id": "8f277e8e-91ce-11e8-81f5-06a15c73f3c3",
@@ -40,7 +37,7 @@
   "team1": {
     "id": "469",
     "name": "TestTeamAlpha",
-    "jerseyColor": "#ED1C24",
+    "jerseyColor": "#F26522",
     "logoUrl": "http://devapp.shottracker.com/v2/imageservice/6b2b5416-5655-11e7-8995-06a15c73f3c3/",
     "players": [
       {
@@ -66,24 +63,14 @@
       {
         "id": "5450",
         "name": "Player 5",
-        "number": "22"
-      },
-      {
-        "id": "54432",
-        "name": "Player 6",
-        "number": "2"
-      },
-      {
-        "id": "5451",
-        "name": "Player 7",
-        "number": "7"
+        "number": "0"
       }
     ]
   },
   "team2": {
     "id": "470",
     "name": "TestTeamBravo",
-    "jerseyColor": "#000066",
+    "jerseyColor": "#003300",
     "logoUrl": "",
     "players": [
       {

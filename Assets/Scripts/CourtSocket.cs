@@ -2,7 +2,7 @@
 using UnityEngine;
 using WebSocketSharp;
 
-public delegate void CourtPositionDelegate(string id, int x, int y);
+public delegate void CourtPositionDelegate(string id, int x, int y, int z);
 public delegate void CourtShotDelegate(string hid, string st);
 
 public class CourtSocket : WebSocket {
@@ -48,8 +48,9 @@ public class CourtSocket : WebSocket {
                 string bid = entity.data.bid + "";
                 int x = entity.data.y;
                 int y = entity.data.x;
+                int z = entity.data.z;
                 UnityMainThreadDispatcher.Instance().Enqueue(
-                    () => OnBallPositionChanged(bid, x, y)
+                    () => OnBallPositionChanged(bid, x, y, z)
                 );
             }
         }
@@ -58,8 +59,9 @@ public class CourtSocket : WebSocket {
                 string pid = entity.data.pid + "";
                 int x = entity.data.y;
                 int y = entity.data.x;
+                int z = entity.data.z;
                 UnityMainThreadDispatcher.Instance().Enqueue(
-                    () => OnPlayerPositionChanged(pid, x, y)
+                    () => OnPlayerPositionChanged(pid, x, y, z)
                 );
             }
             if (entity.data.shot != null && entity.data.shot.hid != null && OnShotMade != null) {

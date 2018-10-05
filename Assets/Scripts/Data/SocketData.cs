@@ -8,6 +8,7 @@ public class SocketData
     public int pid;
     public int x;
     public int y;
+    public int z;
     public string type;
     public string st;
     public EventData data;

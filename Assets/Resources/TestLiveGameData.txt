@@ -66,7 +66,17 @@
       {
         "id": "5450",
         "name": "Player 5",
-        "number": "0"
+        "number": "22"
+      },
+      {
+        "id": "54432",
+        "name": "Player 6",
+        "number": "2"
+      },
+      {
+        "id": "5451",
+        "name": "Player 7",
+        "number": "7"
       }
     ]
   },

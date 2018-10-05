@@ -139,13 +139,21 @@ public class Main : MonoBehaviour
         for (int i = 0; i < Math.Min(playersCount, team.players.Length); i++)
         {
             GameObject playerObject = playersPool.transform.GetChild(i).gameObject;
-            playerObject.transform.GetChild(0).GetComponent<Renderer>().material.color = jerseyColor;
-            playerObject.transform.GetChild(1).GetComponent<TextMesh>().text = team.players[i].number;
-            playerObject.transform.GetChild(1).GetComponent<TextMesh>().color = fontColor;
-            playerObject.transform.GetChild(2).GetComponent<TextMesh>().text = team.players[i].number;
-            playerObject.transform.GetChild(2).GetComponent<TextMesh>().color = fontColor;
-            teamDict.Add(team.players[i].id, playerObject);
+            SetupPlayer(playerObject, jerseyColor, team.players[i].number, fontColor);
+            string id = team.players[i].id;
+            if (!teamDict.ContainsKey(id)) {
+                teamDict.Add(id, playerObject);
+            }
         }
+    }
+
+    private void SetupPlayer(GameObject playerObject, Color jerseyColor, string number, Color fontColor)
+    {
+        playerObject.transform.GetChild(0).GetComponent<Renderer>().material.color = jerseyColor;
+        playerObject.transform.GetChild(1).GetComponent<TextMesh>().text = number;
+        playerObject.transform.GetChild(1).GetComponent<TextMesh>().color = fontColor;
+        playerObject.transform.GetChild(2).GetComponent<TextMesh>().text = number;
+        playerObject.transform.GetChild(2).GetComponent<TextMesh>().color = fontColor;   
     }
 
     void StartCourtSocket() 

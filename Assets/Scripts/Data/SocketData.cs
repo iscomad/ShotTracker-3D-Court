@@ -12,6 +12,7 @@ public class SocketData
     public string st;
     public EventData data;
     public Stat stats;
+    public Shot shot;
 
     [Serializable]
     public class EventData

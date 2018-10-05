@@ -3,11 +3,13 @@ using UnityEngine;
 using WebSocketSharp;
 
 public delegate void CourtPositionDelegate(string id, int x, int y);
+public delegate void CourtShotDelegate(string hid, string st);
 
 public class CourtSocket : WebSocket {
 
     public CourtPositionDelegate OnPlayerPositionChanged;
     public CourtPositionDelegate OnBallPositionChanged;
+    public CourtShotDelegate OnShotMade;
 
     private Data liveGameData;
 
@@ -36,8 +38,8 @@ public class CourtSocket : WebSocket {
     }
 
     void OnMessageHandler(object sender, MessageEventArgs e) {
-        //string message = "WebSocket server said: " + e.Data;
-        //Debug.Log(message);
+        string message = "Court WebSocket server said: " + e.Data;
+        Debug.Log(message);
 
         string jsonString = System.Text.Encoding.UTF8.GetString(e.RawData);
         SocketEntity entity = JsonUtility.FromJson<SocketEntity>(jsonString);
@@ -60,6 +62,12 @@ public class CourtSocket : WebSocket {
                     () => OnPlayerPositionChanged(pid, x, y)
                 );
             }
+            if (entity.data.shot != null && entity.data.shot.hid != null && OnShotMade != null) {
+                Debug.LogWarning("============== " + entity.data.shot.hid + "........" + entity.data.shot.st);
+                UnityMainThreadDispatcher.Instance().Enqueue(
+                    () => OnShotMade(entity.data.shot.hid, entity.data.shot.st)
+                );
+            }
         }
     }
 
@@ -72,12 +80,12 @@ public class CourtSocket : WebSocket {
     }
 
     void OnErrorHandler(object sender, ErrorEventArgs e) {
-        string message = "WebSocket connection failure: " + e.Message;
+        string message = "Court WebSocket connection failure: " + e.Message;
         Debug.LogError(message);
     }
 
     void OnSendComplete(bool success) {
-        string message = "Message sent successfully? " + success;
+        string message = "Court Message sent successfully? " + success;
         Debug.Log(message);
     }
 }

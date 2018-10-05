@@ -7,4 +7,5 @@ public class Court
     public string name;
     public int width;
     public int height;
+    public Hoop[] hoops;
 }

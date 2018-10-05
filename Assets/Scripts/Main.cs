@@ -13,13 +13,12 @@ public class Main : MonoBehaviour
     public GameObject team2Pool;
     public GameObject scoreBoard;
     public GameObject ballsPool;
-    public GameObject basket1;
-    public GameObject basket2;
+    public GameObject hoop1Wrapper;
+    public GameObject hoop2Wrapper;
     public GameObject audioObject;
 
     CourtSocket courtSocket;
     StatsSocket statsSocket;
-    ChartSocket chartSocket;
     SessionSocket sessionSocket;
     MakeMissSoundScript makeMissSoundScript;
     MakeMissAnimationScript basketAnimation1;
@@ -30,6 +29,7 @@ public class Main : MonoBehaviour
     Dictionary<string, GameObject> team1Dict = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> team2Dict = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> ballDict = new Dictionary<string, GameObject>();
+    Dictionary<string, MakeMissAnimationScript> hoopDict = new Dictionary<string, MakeMissAnimationScript>();
 
     Data liveGameData;
 
@@ -40,8 +40,8 @@ public class Main : MonoBehaviour
     void Start()
     {
         makeMissSoundScript = audioObject.GetComponent<MakeMissSoundScript>();
-        basketAnimation1 = basket1.GetComponent<MakeMissAnimationScript>();
-        basketAnimation2 = basket2.GetComponent<MakeMissAnimationScript>();
+        basketAnimation1 = hoop1Wrapper.transform.GetChild(0).GetComponent<MakeMissAnimationScript>();
+        basketAnimation2 = hoop2Wrapper.transform.GetChild(0).GetComponent<MakeMissAnimationScript>();
 
         sessionText = scoreBoard.transform.Find("Session/Text").GetComponent<Text>();
         team1ScoreText = scoreBoard.transform.Find("Score1").GetComponent<Text>();
@@ -70,12 +70,26 @@ public class Main : MonoBehaviour
 
         SetupTeam(liveGameData.team1, team1Dict, team1Pool);
         SetupTeam(liveGameData.team2, team2Dict, team2Pool);
+        SetupCourt(liveGameData.court);
         SetupScoreBoard(liveGameData);
 
         StartCourtSocket();
         StartStatsSocket();
-        StartChartsSocket();
+        // StartChartsSocket();
         StartSessionSocket();
+    }
+
+    void SetupCourt(Court court) {
+        GameObject[] hoopObjects = new GameObject[] { hoop1Wrapper, hoop2Wrapper };
+        Hoop[] hoops = court.hoops;
+        for (int i = 0; i < Math.Min(hoops.Length, hoopObjects.Length); i++) {
+            float xNew = (float)hoops[i].y / court.width * 9 * 2;
+            float zNew = (float)hoops[i].x / court.height * 5 * -2;
+            float yNew = hoopObjects[i].transform.position.y;
+            hoopObjects[i].transform.position = new Vector3(xNew, yNew, zNew);
+            hoopObjects[i].transform.eulerAngles = new Vector3(0, 90 + hoops[i].angleReference);
+            hoopDict.Add(hoops[i].id, hoopObjects[i].transform.GetChild(0).GetComponent<MakeMissAnimationScript>());
+        }
     }
 
     void SetupScoreBoard(Data data)
@@ -139,7 +153,8 @@ public class Main : MonoBehaviour
         courtSocket = new CourtSocket(liveGameData) 
         {
             OnPlayerPositionChanged = SetPlayerPosition,
-            OnBallPositionChanged = SetBallPosition
+            OnBallPositionChanged = SetBallPosition,
+            OnShotMade = OnShot
         };
         courtSocket.ConnectAsync();
     }
@@ -152,15 +167,6 @@ public class Main : MonoBehaviour
         statsSocket.ConnectAsync();
     }
 
-    void StartChartsSocket()
-    {
-        chartSocket = new ChartSocket(liveGameData) {
-            OnMake = OnShotMake,
-            OnMiss = OnShotMiss
-        };
-        chartSocket.ConnectAsync();
-    }
-
     void StartSessionSocket() 
     {
         sessionSocket = new SessionSocket(liveGameData) {
@@ -168,6 +174,19 @@ public class Main : MonoBehaviour
             OnGameEnded = SetGameEnded
         };
         sessionSocket.ConnectAsync();
+    }
+
+    void OnShot(string hid, string st) {
+        if (hoopDict.ContainsKey(hid)) {
+            if ("MAKE".Equals(st)) {
+                hoopDict[hid].AnimateMake();
+                makeMissSoundScript.PlayMakeAudio();
+            } 
+            else if ("MISS".Equals(st)) {
+                hoopDict[hid].AnimateMiss();
+                makeMissSoundScript.PlayMissAudio();
+            }
+        }
     }
 
     void OnShotMake(string tid) {
@@ -201,7 +220,6 @@ public class Main : MonoBehaviour
         SetSession();
         courtSocket.SubscribeToCourt();
         statsSocket.SubscribeToStats();
-        chartSocket.SubscribeToChart();
     }
 
     void SetGameEnded()

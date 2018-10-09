@@ -2,13 +2,13 @@
   "game": {
     "id": "null",
     "sessions": [
-      "0502657e-c8bc-11e8-a617-0242972bf5fb"
+      "28c5add0-cbdb-11e8-8913-0242a014ea52"
     ],
     "facilityId": "6e4118d4-2e50-11e6-b4a4-deecc6e6f586",
-    "roundType": "QUARTER",
-    "socketUrl": "ws://devapp.shottracker.com/live?start_token=fbb81612-99f0-40a2-9b41-2caa1f7124d5",
-    "score1": "10",
-    "score2": "21"
+    "roundType": "HALF",
+    "socketUrl": "ws://devapp.shottracker.com/live?start_token=3144c82f-9bcf-4059-a698-27e2d9722134",
+    "score1": "2",
+    "score2": "3"
   },
   "court": {
     "id": "8f277e8e-91ce-11e8-81f5-06a15c73f3c3",
@@ -19,16 +19,16 @@
       {
         "id": "6e4118d4-2e50-11e6-b4a4-deecc6e6f561",
         "name": "Hoop 1",
-        "x": 40,
-        "y": 11550,
-        "z": 2900,
+        "x": 24,
+        "y": 11725,
+        "z": 3010,
         "angleReference": -180
       },
       {
         "id": "6e4118d4-2e50-11e6-b4a4-deecc6e6f562",
         "name": "Hoop 2",
-        "x": 61,
-        "y": -11710,
+        "x": 2,
+        "y": -11835,
         "z": 2895,
         "angleReference": 0
       }
@@ -37,7 +37,7 @@
   "team1": {
     "id": "469",
     "name": "TestTeamAlpha",
-    "jerseyColor": "#F26522",
+    "jerseyColor": "#ED1C24",
     "logoUrl": "http://devapp.shottracker.com/v2/imageservice/6b2b5416-5655-11e7-8995-06a15c73f3c3/",
     "players": [
       {
@@ -70,7 +70,7 @@
   "team2": {
     "id": "470",
     "name": "TestTeamBravo",
-    "jerseyColor": "#003300",
+    "jerseyColor": "#000066",
     "logoUrl": "",
     "players": [
       {

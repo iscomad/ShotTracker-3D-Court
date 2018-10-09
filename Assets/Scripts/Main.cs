@@ -9,6 +9,7 @@ using System.Collections;
 
 public class Main : MonoBehaviour
 {
+    public GameObject courtWrapper;
     public GameObject team1Pool;
     public GameObject team2Pool;
     public GameObject scoreBoard;
@@ -16,6 +17,7 @@ public class Main : MonoBehaviour
     public GameObject hoop1Wrapper;
     public GameObject hoop2Wrapper;
     public GameObject audioObject;
+    public Button flipButton;
 
     CourtSocket courtSocket;
     StatsSocket statsSocket;
@@ -25,6 +27,7 @@ public class Main : MonoBehaviour
     MakeMissAnimationScript basketAnimation2;
     const float WIDTH = 26440f;
     const float HEIGHT = 14760f;
+    bool isFlipped = false;
 
     Dictionary<string, GameObject> team1Dict = new Dictionary<string, GameObject>();
     Dictionary<string, GameObject> team2Dict = new Dictionary<string, GameObject>();
@@ -72,6 +75,7 @@ public class Main : MonoBehaviour
         SetupTeam(liveGameData.team2, team2Dict, team2Pool);
         SetupCourt(liveGameData.court);
         SetupScoreBoard(liveGameData);
+        SetupFlipButton();
 
         StartCourtSocket();
         StartStatsSocket();
@@ -115,6 +119,23 @@ public class Main : MonoBehaviour
         SetScore(data.team2.id, data.game.score2);
 
         SetSession();
+    }
+
+    void SetupFlipButton() {
+        flipButton.onClick.AddListener(HandleFlipButton);
+    }
+
+    void HandleFlipButton() {
+        Quaternion rotation = courtWrapper.transform.rotation;
+        float rotationValue;
+        if (rotation.y == 0) {
+            rotationValue = 180f;
+        }
+        else {
+            rotationValue = -180f;
+        }
+        StartCoroutine(RotateObject(courtWrapper, Quaternion.Euler(0, !isFlipped ? 180 : 0, 0), 1f));
+        isFlipped = !isFlipped;
     }
 
     string ReadFromTestFile()
@@ -318,7 +339,7 @@ public class Main : MonoBehaviour
         Court court = liveGameData.court;
         float xNew = (float)x / court.width * 9 * 2;
         float zNew = (float)y / court.height * 5 * -2;
-        float yNew = z == int.MinValue ? gObject.transform.position.y : (float) z / court.width * 9 * 2 + 0.35f; // 0.1 is the height of the floor
+        float yNew = z == int.MinValue ? gObject.transform.localPosition.y : (float) z / court.width * 9 * 2 + 0.35f; // 0.1 is the height of the floor
         Vector3 target = new Vector3(xNew, yNew, zNew);
         //gObject.transform.position = target;
         StartCoroutine(MoveObject(gObject, target, 0.3f));
@@ -352,13 +373,23 @@ public class Main : MonoBehaviour
 
     IEnumerator MoveObject(GameObject gObject, Vector3 target, float duration)
     {
-        Vector3 source = gObject.transform.position;
+        Vector3 source = gObject.transform.localPosition;
         float startTime = Time.time;
         while (Time.time < startTime + duration)
         {
-            gObject.transform.position = Vector3.Lerp(source, target, (Time.time - startTime) / duration);
+            gObject.transform.localPosition = Vector3.Lerp(source, target, (Time.time - startTime) / duration);
             yield return null;
         }
-        gObject.transform.position = target;
+        gObject.transform.localPosition = target;
+    }
+
+    IEnumerator RotateObject(GameObject gObject, Quaternion target, float duration) {
+        Quaternion source = gObject.transform.rotation;
+        float startTime = Time.time;
+        while (Time.time < startTime + duration) {
+            gObject.transform.rotation = Quaternion.Lerp(source, target, (Time.time - startTime) / duration);
+            yield return null;
+        }
+        gObject.transform.rotation = target;
     }
 }

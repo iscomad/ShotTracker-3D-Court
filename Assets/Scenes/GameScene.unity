@@ -1047,15 +1047,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1393,15 +1393,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1511,7 +1511,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.55
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1551,15 +1551,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -3438,15 +3438,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -6589,15 +6589,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 2.25
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 47a4ea567c5f145198ecafbcd2d29f98, type: 3}
       propertyPath: m_StaticEditorFlags

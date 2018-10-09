@@ -106,8 +106,8 @@ public class Main : MonoBehaviour
     {
         if (data == null) return;
 
-        scoreBoard.transform.Find("Name1").GetComponent<Text>().text = data.team1.name;
-        scoreBoard.transform.Find("Name2").GetComponent<Text>().text = data.team2.name;
+        scoreBoard.transform.Find("Name1").GetComponent<Text>().text = data.team1.name.ToUpper();
+        scoreBoard.transform.Find("Name2").GetComponent<Text>().text = data.team2.name.ToUpper();
 
         Image image = scoreBoard.transform.Find("Logo1/Mask/Logo").GetComponent<Image>();
         StartCoroutine(LoadImage(image, data.team1.logoUrl));

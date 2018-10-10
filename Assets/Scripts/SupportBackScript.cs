@@ -8,7 +8,7 @@ public class SupportBackScript: MonoBehaviour {
 
     void Start()
     {
-        transform.GetComponent<Button>().onClick.AddListener(HandleBackButton);
+        GetComponent<Button>().onClick.AddListener(HandleBackButton);
     }
 
     private void HandleBackButton()

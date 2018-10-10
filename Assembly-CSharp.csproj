@@ -55,7 +55,6 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraLookAtScript.cs" />
      <Compile Include="Assets\Scripts\ChartSocket.cs" />
-     <Compile Include="Assets\Scripts\CoroutineExample.cs" />
      <Compile Include="Assets\Scripts\CourtSocket.cs" />
      <Compile Include="Assets\Scripts\Data\Court.cs" />
      <Compile Include="Assets\Scripts\Data\Data.cs" />

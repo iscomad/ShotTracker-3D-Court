@@ -126,16 +126,19 @@ public class Main : MonoBehaviour
     }
 
     void HandleFlipButton() {
-        Quaternion rotation = courtWrapper.transform.rotation;
-        float rotationValue;
-        if (rotation.y == 0) {
-            rotationValue = 180f;
-        }
-        else {
-            rotationValue = -180f;
-        }
         StartCoroutine(RotateObject(courtWrapper, Quaternion.Euler(0, !isFlipped ? 180 : 0, 0), 1f));
+        Quaternion playersRotation = Quaternion.Euler(0, isFlipped ? 180 : 0, 0);
+        RotatePlayers(team1Pool, playersRotation);
+        RotatePlayers(team2Pool, playersRotation);
         isFlipped = !isFlipped;
+    }
+
+    private void RotatePlayers(GameObject playersPool, Quaternion targetRotation)
+    {
+        Transform transform = playersPool.transform;
+        for (int i = 0; i < transform.childCount; i++) {
+            transform.GetChild(i).localRotation = targetRotation;
+        }
     }
 
     string ReadFromTestFile()

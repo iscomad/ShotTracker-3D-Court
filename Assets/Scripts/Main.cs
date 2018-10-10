@@ -82,6 +82,12 @@ public class Main : MonoBehaviour
         StartSessionSocket();
     }
 
+    // TODO: remove
+    private void TestPlayerMove()
+    {
+        StartCoroutine(TestPlayerPosition());
+    }
+
     void OnDestroy()
     {
         courtSocket.Close();
@@ -342,10 +348,13 @@ public class Main : MonoBehaviour
         Court court = liveGameData.court;
         float xNew = (float)x / court.width * 9 * 2;
         float zNew = (float)y / court.height * 5 * -2;
-        float yNew = z == int.MinValue ? gObject.transform.localPosition.y : (float) z / court.width * 9 * 2 + 0.35f; // 0.1 is the height of the floor
+        float yNew = z == int.MinValue ? gObject.transform.localPosition.y : (float) z / court.width * 9 * 2 + 0.35f; // 0.35 is the height of the floor + ball radius
         Vector3 target = new Vector3(xNew, yNew, zNew);
         //gObject.transform.position = target;
-        StartCoroutine(MoveObject(gObject, target, 0.3f));
+        bool hide = x > court.width / 2 + 1000 || x < -court.width / 2 - 1000 
+                    || y > court.height / 2 + 1000 || y < -court.height / 2 - 1000;
+
+        StartCoroutine(MoveObject(gObject, target, 0.3f, hide));
     }
 
     void SetScore(string teamId, string score)
@@ -374,7 +383,7 @@ public class Main : MonoBehaviour
         }
     }
 
-    IEnumerator MoveObject(GameObject gObject, Vector3 target, float duration)
+    IEnumerator MoveObject(GameObject gObject, Vector3 target, float duration, bool hide)
     {
         Vector3 source = gObject.transform.localPosition;
         float startTime = Time.time;
@@ -384,6 +393,10 @@ public class Main : MonoBehaviour
             yield return null;
         }
         gObject.transform.localPosition = target;
+
+        if (gObject.activeSelf == hide) {
+            gObject.SetActive(!hide);
+        }
     }
 
     IEnumerator RotateObject(GameObject gObject, Quaternion target, float duration) {
@@ -394,5 +407,17 @@ public class Main : MonoBehaviour
             yield return null;
         }
         gObject.transform.rotation = target;
+    }
+
+    IEnumerator TestPlayerPosition() {
+        for (int i = -25; i < 25; i++) {
+            SetPlayerPosition("3664", i * 1000, 0, 0);
+            yield return new WaitForSeconds(.301f);
+        }
+
+        for (int i = -15; i < 15; i++) {
+            SetPlayerPosition("3664", 0, i * 1000, 0);
+            yield return new WaitForSeconds(.301f);
+        }
     }
 }

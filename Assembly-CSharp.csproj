@@ -72,6 +72,7 @@
      <Compile Include="Assets\Scripts\StatsSocket.cs" />
      <Compile Include="Assets\Scripts\SupportBackScript.cs" />
      <Compile Include="Assets\Scripts\UnityMainThreadDispatcher.cs" />
+     <Compile Include="Assets\ZoomHandler.cs" />
      <None Include="Assets\Shaders\3D Text Shader.shader" />
      <None Include="Assets\Resources\TestLiveGameData.txt" />
  <Reference Include="UnityEditor.StandardEvents">

@@ -18,13 +18,13 @@ public class ZoomHandler : MonoBehaviour {
     private void OnButtonClick()
     {
         switch (zoomText.text) {
-			case "1x":
+			case "1X":
 				ZoomIn();
-				zoomText.text = "2x";
+				zoomText.text = "2X";
 				break;
-			case "2x":
+			case "2X":
 				ZoomOut();
-				zoomText.text = "1x";
+				zoomText.text = "1X";
 				break;
 		}
     }
